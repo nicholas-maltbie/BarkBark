@@ -27,6 +27,17 @@ function SignIn(props) {
     )
   }
 }
+function MenuBar(props) {
+  return (
+    <div className="MainMenuPanel">
+      <div> BarkBark </div>
+      <div> Map </div>
+      <div> Profile </div>
+      <div> About </div>
+      <div> Help </div>
+    </div>
+  )
+}
 
 class App extends Component {
   // The component's Local state.
@@ -49,13 +60,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to BarkBark</h1>
-        </header>
-        <p className="App-intro">
-          Bark like never before.
-        </p>
+        <MenuBar/>
         <SignIn isSignedIn={this.state.isSignedIn}/>
       </div>
     );
