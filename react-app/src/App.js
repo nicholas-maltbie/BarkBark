@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import NavBar from './Component.js';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './App.css';
-
 import uiConfig from './Fire.js';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
@@ -9,7 +10,7 @@ import firebase from 'firebase';
 function SignIn(props) {
   if (!props.isSignedIn) {
     return (
-      <div>
+      <div className="SignIn">
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
       </div>
@@ -17,7 +18,7 @@ function SignIn(props) {
   }
   else {
     return (
-      <div>
+      <div className="SignIn">
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
         <p onClick={() => firebase.auth().signOut()}
           color="#4db8ff">
@@ -26,17 +27,6 @@ function SignIn(props) {
       </div>
     )
   }
-}
-function MenuBar(props) {
-  return (
-    <div className="MainMenuPanel">
-      <div> BarkBark </div>
-      <div> Map </div>
-      <div> Profile </div>
-      <div> About </div>
-      <div> Help </div>
-    </div>
-  )
 }
 
 class App extends Component {
@@ -60,7 +50,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <MenuBar/>
+        <MuiThemeProvider>
+          <NavBar/>
+        </MuiThemeProvider>
+        
         <SignIn isSignedIn={this.state.isSignedIn}/>
       </div>
     );
