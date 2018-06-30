@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import uiConfig from './Fire.js';
+import { uiConfig, verifyAccount } from './Fire.js';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
 
@@ -16,6 +16,10 @@ function SignIn(props) {
     )
   }
   else {
+    var user = firebase.auth().currentUser;
+    if (user != null) {
+      verifyAccount(user.uid, user.displayName, user.email)
+    }
     return (
       <div>
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
