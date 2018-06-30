@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+import NavBar from './Component.js'
 import logo from './logo.svg';
-import NavBar from './Component.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './App.css';
 import uiConfig from './Fire.js';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
+import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from "react-router-dom";
+import MapPage from './MapPage.js';
+
+
+
 
 function SignIn(props) {
   if (!props.isSignedIn) {
     return (
-      <div className="SignIn">
+      <div className="Screen">
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
       </div>
@@ -18,7 +23,7 @@ function SignIn(props) {
   }
   else {
     return (
-      <div className="SignIn">
+      <div className="Screen">
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
         <p onClick={() => firebase.auth().signOut()}
           color="#4db8ff">
@@ -49,13 +54,16 @@ class App extends Component {
   
   render() {
     return (
-      <div className="App">
-        <MuiThemeProvider>
-          <NavBar/>
-        </MuiThemeProvider>
-        
-        <SignIn isSignedIn={this.state.isSignedIn}/>
-      </div>
+      <Router>
+        <div>
+          <MuiThemeProvider>
+            <NavBar/>
+          </MuiThemeProvider>
+
+          <Route exact path="/" component={SignIn}/>
+          <Route path="/Map" component={MapPage}/>
+        </div>
+      </Router>
     );
   }
 }

@@ -27,6 +27,10 @@ body, #root, .App{
   font-size: large;
 }
 
+.Screen {
+  width: 100%;
+  height:90%;
+}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

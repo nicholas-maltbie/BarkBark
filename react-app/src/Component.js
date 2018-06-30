@@ -4,8 +4,9 @@ import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import Menu from 'material-ui/svg-icons/navigation/menu.js';
-import Avatar from 'material-ui/Avatar';
-import Chip from 'material-ui/Chip';
+import Person from 'material-ui/svg-icons/social/person.js';
+import { Router, Route, Link, Redirect, withRouter } from "react-router-dom";
+
 
 
 const NavBarStyle = {
@@ -13,45 +14,54 @@ const NavBarStyle = {
     flexDirection: 'row',
     alignItems:'center',
     backgroundColor: 'rgb(51, 204, 204)',
-    width:'100%'
+    width:'100%',
+    height:'10%'
 };
 const NavBarHeaderStyle = {
-    width:'80%',
+    width:'90%',
     textAlign: 'center',
     fontSize:'24px'
 };
-const NavBarMenuStyle = {
-    width:'10%'
-}
+const NavBarButtonStyle = {
+    width:'5%'
+};
 
-export default class NavBar extends React.Component {
+class NavBar extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {open: false};
+
+    this.handleLink = this.handleLink.bind(this);
   }
 
   handleToggle = () => this.setState({open: !this.state.open});
+  handleLink(e) {
+    e.preventDefault();
+    if(e.target.innerText == "Login"){
+      this.props.history.push('/');
+    }
+    else{
+      this.props.history.push('/' + e.target.innerText);
+    }
+  }
 
   render() {
     return (
       <div style={NavBarStyle}>
-        <FlatButton onClick={this.handleToggle} style={NavBarMenuStyle}>
-          <Menu viewBox="0 0 20 20" style={{marginTop:'2px'}}/>
-        </FlatButton>
+        <FlatButton onClick={this.handleToggle} style={NavBarButtonStyle} icon={<Menu/>}/>
         <div className="Header" style={NavBarHeaderStyle}>
           Bark Bark
         </div>
-        <Chip>
-          <Avatar icon={<Menu/>} />
-          FontIcon Avatar Chip
-        </Chip>
+        <FlatButton onClick={this.handleToggle} style={NavBarButtonStyle} icon={<Person/>}/>
         <Drawer open={this.state.open}>
-          <MenuItem>Menu Item</MenuItem>
-          <MenuItem>Menu Item 2</MenuItem>
+          <MenuItem onClick={this.handleLink}>Login</MenuItem>
+          <MenuItem onClick={this.handleLink}>Map</MenuItem>
           <FlatButton label="Close" onClick={this.handleToggle}/>
         </Drawer>
       </div>
     );
   }
 }
+
+export default withRouter(NavBar);
