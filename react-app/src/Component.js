@@ -7,8 +7,6 @@ import Menu from 'material-ui/svg-icons/navigation/menu.js';
 import Person from 'material-ui/svg-icons/social/person.js';
 import { Router, Route, Link, Redirect, withRouter } from "react-router-dom";
 
-
-
 const NavBarStyle = {
     display: 'flex',
     flexDirection: 'row',
@@ -42,22 +40,24 @@ class NavBar extends React.Component {
       this.props.history.push('/');
     }
     else{
-      this.props.history.push('/' + e.target.innerText);
+      this.props.history.push('/' + e.target.innerText.replace(" ", ""));
     }
   }
 
   render() {
     return (
       <div style={NavBarStyle}>
-        <FlatButton onClick={this.handleToggle} style={NavBarButtonStyle} icon={<Menu/>}/>
+        <FlatButton onClick={this.props.handleDrawerToggle} style={NavBarButtonStyle} icon={<Menu/>}/>
         <div className="Header" style={NavBarHeaderStyle}>
           Bark Bark
         </div>
-        <FlatButton onClick={this.handleToggle} style={NavBarButtonStyle} icon={<Person/>}/>
-        <Drawer open={this.state.open}>
-          <MenuItem onClick={this.handleLink}>Login</MenuItem>
+        <FlatButton onClick={this.props.handleDrawerToggle} style={NavBarButtonStyle} icon={<Person/>}/>
+        <Drawer open={!this.props.drawerClose}>
+          <MenuItem onClick={this.handleLink}>Home</MenuItem>
           <MenuItem onClick={this.handleLink}>Map</MenuItem>
-          <FlatButton label="Close" onClick={this.handleToggle}/>
+          <MenuItem onClick={this.handleLink}>Profile</MenuItem>
+          <MenuItem onClick={this.handleLink}>Help</MenuItem>
+          <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
         </Drawer>
       </div>
     );
