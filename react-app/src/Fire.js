@@ -1,5 +1,5 @@
 // Import FirebaseAuth and firebase.
-import React from 'react';
+// import React from 'react';
 import firebase from 'firebase';
 
 // Configure Firebase.
@@ -15,7 +15,7 @@ var config = {
 firebase.initializeApp(config);
 
 // Configure FirebaseUI.
-const uiConfig = {
+export const uiConfig = {
   // Popup signin flow rather than redirect flow.
   signInFlow: 'popup',
   // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
@@ -29,4 +29,49 @@ const uiConfig = {
   ]
 };
 
-export default uiConfig;
+export function verifyAccount(userId, name, email) {
+  var ref = firebase.database().ref()
+  
+  ref.child("users/" + userId).once("value", function (snapshot) {
+    if (snapshot.val() != null) {
+        console.log("User exists")
+    }
+    else {
+        console.log("User doesn't exist")
+        ref.child("users/" + userId).set({
+            username: name,
+            email: email,
+            dog: {
+                name: "Doggy",
+                breed: "Husky",
+                emotion: "Happy",
+                fur: "Grey",
+                color: "Blue"
+            }
+        })
+    }
+  })
+  /*
+  if (userRef.transaction(function(currentData) {
+    if (currentData == null) {
+      console.log("creating new user")
+      return {
+        username: name,
+        email: email,
+        dog: {
+            name: "Doggy",
+            breed: "Husky",
+            emotion: "Happy",
+            fur: "Grey",
+            color: "Blue"
+        }
+      }
+    }
+    else {
+      console.log("data already exists")
+      return;
+    }
+  }))*/
+  
+  return;
+}
