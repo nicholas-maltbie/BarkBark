@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import NavBar from './Component.js'
 import logo from './logo.svg';
 import './App.css';
 import uiConfig from './Fire.js';
@@ -13,6 +12,8 @@ import HomePage from './Pages/HomePage.js';
 import HelpPage from './Pages/HelpPage.js';
 import ProfilePage from './Pages/ProfilePage.js';
 import ContactUsPage from './Pages/ContactUsPage.js';
+import DogEdit from './Components/DogEdit.js';
+import NavBar from './Components/NavBar.js';
 
 function SignIn(props) {
   if (!props.isSignedIn) {
@@ -101,6 +102,7 @@ class App extends Component {
             <Route path="/Help" component={HelpPage}/>
             <Route path="/Profile" component={ProfilePage}/>
             <Route path="/ContactUs" component={ContactUsPage}/>
+            <Route path="/DogEdit" component={DogEdit}/>
           </MuiThemeProvider>
         </div>
       </Router>

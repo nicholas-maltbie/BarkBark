@@ -32,6 +32,15 @@ body, #root, .App{
   height:90%;
 }
 
+.dogPreviewBGStyle {
+  width: 100%;
+  height: 100%;
+}
+.dogPreviewStyle {
+  width:500px;
+  height:500px;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
