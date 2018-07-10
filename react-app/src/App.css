@@ -8,7 +8,7 @@ body, #root, .App{
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
+  animation: swing 3s infinite ease-in-out;
   height: 80px;
 }
 
@@ -41,9 +41,11 @@ body, #root, .App{
   height:500px;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes swing {
+  0%, 100%  { transform: rotate(-10deg); }
+  20%       { transform: rotate(0);}
+  50%       { transform: rotate(10deg); }
+  80%       { transform: rotate(0);}
 }
 
 @font-face {

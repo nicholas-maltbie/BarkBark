@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
-import uiConfig from './Fire.js';
+import { uiConfig, verifyAccount } from './Fire.js';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from "react-router-dom";
@@ -25,6 +25,10 @@ function SignIn(props) {
     )
   }
   else {
+    var user = firebase.auth().currentUser;
+    if (user != null) {
+      verifyAccount(user.uid, user.displayName, user.email)
+    }
     return (
       <div className="Page">
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
