@@ -2,6 +2,7 @@
   "name": "BarkBark",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://bark.fyi",
   "dependencies": {
     "firebaseui": "^3.0.0",
     "react": "^16.4.0",
