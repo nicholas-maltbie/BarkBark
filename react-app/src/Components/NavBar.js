@@ -3,6 +3,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import firebase from 'firebase';
 import Menu from 'material-ui/svg-icons/navigation/menu.js';
 import Person from 'material-ui/svg-icons/social/person.js';
 import { Router, Route, Link, Redirect, withRouter } from "react-router-dom";
@@ -31,6 +32,7 @@ class NavBar extends React.Component {
     this.state = {open: false};
 
     this.handleLink = this.handleLink.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   handleToggle = () => this.setState({open: !this.state.open});
@@ -42,6 +44,12 @@ class NavBar extends React.Component {
     else{
       this.props.history.push('/' + e.target.innerText.replace(" ", ""));
     }
+  }
+  
+  signOut(e) {
+    firebase.auth().signOut()
+    e.preventDefault();
+    this.props.history.push('/');
   }
 
   render() {
@@ -58,6 +66,7 @@ class NavBar extends React.Component {
           <MenuItem onClick={this.handleLink}>Profile</MenuItem>
           <MenuItem onClick={this.handleLink}>Help</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
+          <MenuItem onClick={this.signOut}>Sign Out</MenuItem>
         </Drawer>
       </div>
     );

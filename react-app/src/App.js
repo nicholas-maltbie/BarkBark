@@ -89,28 +89,42 @@ class App extends Component {
   }
   
   render() {
-    if(!this.state.isSignedIn){
-      return(
-        <SignIn isSignedIn={this.state.isSignedIn}/>
-      )
-    }
-    return (
+    if (this.state.isSignedIn) {
+      return (
       <Router>
         <div className="App">
           <MuiThemeProvider>
             <ClickAwayListener onClickAway={this.handleCADrawerToggle}> 
-              <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle}/>
+              <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
             </ClickAwayListener>
             <Route path="/Map" render={() => <MapPage userCenter={this.state.userCenter}/>}/>
+            <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
             <Route path="/Home" component={HomePage}/>
-            <Route path="/Help" component={HelpPage}/>
             <Route path="/Profile" component={ProfilePage}/>
-            <Route path="/ContactUs" component={ContactUsPage}/>
             <Route path="/DogEdit" component={DogEdit}/>
+            <Route path="/Help" component={HelpPage}/>
+            <Route path="/ContactUs" component={ContactUsPage}/>
           </MuiThemeProvider>
         </div>
       </Router>
-    );
+      )
+    }
+    else {
+      return (
+      <Router>
+        <div className="App">
+          <MuiThemeProvider>
+            <ClickAwayListener onClickAway={this.handleCADrawerToggle}> 
+              <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
+            </ClickAwayListener>
+            <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+            <Route path="/Help" component={HelpPage}/>
+            <Route path="/ContactUs" component={ContactUsPage}/>
+          </MuiThemeProvider>
+        </div>
+      </Router>
+      )
+    }
   }
 }
 
