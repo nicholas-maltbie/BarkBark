@@ -9,6 +9,7 @@ body, #root, .App{
 
 .App-logo {
   animation: swing 3s infinite ease-in-out;
+  padding: 10px;
   height: 80px;
 }
 

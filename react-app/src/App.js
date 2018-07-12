@@ -4,7 +4,7 @@ import './App.css';
 import { uiConfig, verifyAccount } from './Fire.js';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import MapPage from './Pages/MapPage.js';
@@ -14,11 +14,13 @@ import ProfilePage from './Pages/ProfilePage.js';
 import ContactUsPage from './Pages/ContactUsPage.js';
 import DogEdit from './Components/DogEdit.js';
 import NavBar from './Components/NavBar.js';
+import my404Component from './Components/404.js';
 
 function SignIn(props) {
   if (!props.isSignedIn) {
     return (
       <div className="Page">
+        <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
       </div>
@@ -31,6 +33,7 @@ function SignIn(props) {
     }
     return (
       <div className="Page">
+        <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
         <p onClick={() => firebase.auth().signOut()}
           color="#4db8ff">
@@ -97,13 +100,17 @@ class App extends Component {
             <ClickAwayListener onClickAway={this.handleCADrawerToggle}> 
               <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
             </ClickAwayListener>
-            <Route path="/Map" render={() => <MapPage userCenter={this.state.userCenter}/>}/>
-            <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
-            <Route path="/Home" component={HomePage}/>
-            <Route path="/Profile" component={ProfilePage}/>
-            <Route path="/DogEdit" component={DogEdit}/>
-            <Route path="/Help" component={HelpPage}/>
-            <Route path="/ContactUs" component={ContactUsPage}/>
+            <Switch>
+              <Route path="/Map" render={() => <MapPage userCenter={this.state.userCenter}/>}/>
+              <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/Home" component={HomePage}/>
+              <Route path="/Profile" component={ProfilePage}/>
+              <Route path="/DogEdit" component={DogEdit}/>
+              <Route path="/Help" component={HelpPage}/>
+              <Route path="/ContactUs" component={ContactUsPage}/>
+              <Route component={my404Component} />
+            </Switch>
           </MuiThemeProvider>
         </div>
       </Router>
@@ -117,9 +124,13 @@ class App extends Component {
             <ClickAwayListener onClickAway={this.handleCADrawerToggle}> 
               <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
             </ClickAwayListener>
-            <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
-            <Route path="/Help" component={HelpPage}/>
-            <Route path="/ContactUs" component={ContactUsPage}/>
+            <Switch>
+              <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/Help" component={HelpPage}/>
+              <Route path="/ContactUs" component={ContactUsPage}/>
+              <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route component={my404Component} />
+            </Switch>
           </MuiThemeProvider>
         </div>
       </Router>

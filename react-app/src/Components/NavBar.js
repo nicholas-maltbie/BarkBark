@@ -30,6 +30,7 @@ class NavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {open: false};
+    this.isSignedIn = false;
 
     this.handleLink = this.handleLink.bind(this);
     this.signOut = this.signOut.bind(this);
@@ -53,23 +54,53 @@ class NavBar extends React.Component {
   }
 
   render() {
-    return (
+    if (this.props.isSignedIn) {
+      return (
       <div style={NavBarStyle}>
-        <FlatButton onClick={this.props.handleDrawerToggle} style={NavBarButtonStyle} icon={<Menu/>}/>
-        <div className="Header" style={NavBarHeaderStyle}>
+        <FlatButton 
+          onClick={this.props.handleDrawerToggle} 
+          style={NavBarButtonStyle} 
+          icon={<Menu/>}/>
+        <div className="Header" 
+          style={NavBarHeaderStyle}>
           Bark Bark
         </div>
-        <FlatButton onClick={this.props.handleDrawerToggle} style={NavBarButtonStyle} icon={<Person/>}/>
+        <FlatButton 
+          onClick={this.props.handleDrawerToggle} 
+          style={NavBarButtonStyle} 
+          icon={<Person/>}/>
         <Drawer open={!this.props.drawerClose}>
+          <MenuItem onClick={this.signOut}>Sign Out</MenuItem>
           <MenuItem onClick={this.handleLink}>Home</MenuItem>
           <MenuItem onClick={this.handleLink}>Map</MenuItem>
           <MenuItem onClick={this.handleLink}>Profile</MenuItem>
           <MenuItem onClick={this.handleLink}>Help</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
-          <MenuItem onClick={this.signOut}>Sign Out</MenuItem>
         </Drawer>
       </div>
-    );
+      )
+    }
+    else {
+      return (
+      <div style={NavBarStyle}>
+        <FlatButton 
+          onClick={this.props.handleDrawerToggle} 
+          style={NavBarButtonStyle} 
+          icon={<Menu/>}/>
+        <div className="Header" 
+          style={NavBarHeaderStyle}>
+          Bark Bark
+        </div>
+        <FlatButton 
+          style={NavBarButtonStyle}/>
+        <Drawer open={!this.props.drawerClose}>
+          <MenuItem onClick={this.handleLink}>Sign In</MenuItem>
+          <MenuItem onClick={this.handleLink}>Help</MenuItem>
+          <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
+        </Drawer>
+      </div>
+      )
+    }
   }
 }
 
