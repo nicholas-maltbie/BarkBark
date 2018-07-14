@@ -14,6 +14,7 @@ import HelpPage           from './Pages/HelpPage.js';
 import ProfilePage        from './Pages/ProfilePage.js';
 import ContactUsPage      from './Pages/ContactUsPage.js';
 import AboutPage          from './Pages/About.js';
+import TermsPage          from './Pages/Terms.js';
 import DogEdit            from './Components/DogEdit.js';
 import NavBar             from './Components/NavBar.js';
 import my404Component     from './Components/404.js';
@@ -25,6 +26,7 @@ function SignIn(props) {
         <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+        <p>By Signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
       </div>
     )
   }
@@ -106,12 +108,13 @@ class App extends Component {
               <Route path="/Map" render={() => <MapPage userCenter={this.state.userCenter}/>}/>
               <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
               <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
-              <Route path="/Home" component={HomePage}/>
-              <Route path="/Profile" component={ProfilePage}/>
-              <Route path="/DogEdit" component={DogEdit}/>
-              <Route path="/Help" component={HelpPage}/>
-              <Route path="/ContactUs" component={ContactUsPage}/>
-              <Route path="/AboutUs" component={AboutPage}/>
+              <Route path="/Home"         component={HomePage}/>
+              <Route path="/Profile"      component={ProfilePage}/>
+              <Route path="/DogEdit"      component={DogEdit}/>
+              <Route path="/Help"         component={HelpPage}/>
+              <Route path="/AboutUs"      component={AboutPage}/>
+              <Route path="/TermsOfUse"   component={TermsPage}/>
+              <Route path="/ContactUs"    component={ContactUsPage}/>
               <Route component={my404Component} />
             </Switch>
           </MuiThemeProvider>
@@ -130,9 +133,10 @@ class App extends Component {
             <Switch>
               <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
               <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
-              <Route path="/Help" component={HelpPage}/>
-              <Route path="/ContactUs" component={ContactUsPage}/>
-              <Route path="/AboutUs" component={AboutPage}/>
+              <Route path="/Help"         component={HelpPage}/>
+              <Route path="/AboutUs"      component={AboutPage}/>
+              <Route path="/TermsOfUse"   component={TermsPage}/>
+              <Route path="/ContactUs"    component={ContactUsPage}/>
               <Route component={my404Component} />
             </Switch>
           </MuiThemeProvider>

@@ -7,7 +7,7 @@ import '../App.css';
 class my404Component extends Component {
   render() {
     return (
-      <div className="Page">
+      <div>
         <p>
           <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="husky1"/>
           <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="husky2"/>

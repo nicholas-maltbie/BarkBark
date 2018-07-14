@@ -1,17 +1,11 @@
 import React from 'react';
-
-const TermsPageScreenStyle ={
-    height: '90%',
-    width: '10%'
-}
-
 class TermsPage extends React.Component {
     render(){
         return(
-            <div className="Page" style={TermsPageScreenStyle}>
+            <div className="Page">
                 <h2>Welcome to Bark Bark</h2>
 	<p>These terms and conditions outline the rules and regulations for the use of Bark Bark's Website.</p> <br /> 
-	<span style="text-transform: capitalize;"> Bark Bark</span> is located at:<br /> 
+	<span> Bark Bark</span> is located at:<br /> 
 	<address>2600 Clifton Ave , Cincinnati<br />Ohio - 45220, United States<br />
 	</address>
 	<p>By accessing this website we assume you accept these terms and conditions in full. Do not continue to use Bark Bark's website 
@@ -78,7 +72,7 @@ class TermsPage extends React.Component {
 	unfavorably on us or our accredited businesses (for example, trade associations or other organizations
 	representing inherently suspect types of business, such as work-at-home opportunities, shall not be allowed
 	to link); (b)the organization does not have an unsatisfactory record with us; (c) the benefit to us from
-	the visibility associated with the hyperlink outweighs the absence of <?=$companyName?>; and (d) where the
+	the visibility associated with the hyperlink outweighs the absence of [companyName]; and (d) where the
 	link is in the context of general resource information or is otherwise consistent with editorial content
 	in a newsletter or similar product furthering the mission of the organization.</p>
 
