@@ -21,7 +21,7 @@ import my404Component     from './Components/404.js';
 function SignIn(props) {
   if (!props.isSignedIn) {
     return (
-      <div className="Page">
+      <div>
         <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
@@ -34,7 +34,7 @@ function SignIn(props) {
       verifyAccount(user.uid, user.displayName, user.email)
     }
     return (
-      <div className="Page">
+      <div>
         <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
         <p onClick={() => firebase.auth().signOut()}
