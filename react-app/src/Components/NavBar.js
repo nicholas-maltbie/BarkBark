@@ -76,6 +76,7 @@ class NavBar extends React.Component {
           <MenuItem onClick={this.handleLink}>Profile</MenuItem>
           <MenuItem onClick={this.handleLink}>Help</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
+          <MenuItem onClick={this.handleLink}>About Us</MenuItem>
         </Drawer>
       </div>
       )
@@ -97,6 +98,7 @@ class NavBar extends React.Component {
           <MenuItem onClick={this.handleLink}>Sign In</MenuItem>
           <MenuItem onClick={this.handleLink}>Help</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
+          <MenuItem onClick={this.handleLink}>About Us</MenuItem>
         </Drawer>
       </div>
       )

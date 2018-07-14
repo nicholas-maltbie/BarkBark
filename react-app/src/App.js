@@ -7,14 +7,16 @@ import firebase from 'firebase';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import MapPage from './Pages/MapPage.js';
-import HomePage from './Pages/HomePage.js';
-import HelpPage from './Pages/HelpPage.js';
-import ProfilePage from './Pages/ProfilePage.js';
-import ContactUsPage from './Pages/ContactUsPage.js';
-import DogEdit from './Components/DogEdit.js';
-import NavBar from './Components/NavBar.js';
-import my404Component from './Components/404.js';
+
+import MapPage            from './Pages/MapPage.js';
+import HomePage           from './Pages/HomePage.js';
+import HelpPage           from './Pages/HelpPage.js';
+import ProfilePage        from './Pages/ProfilePage.js';
+import ContactUsPage      from './Pages/ContactUsPage.js';
+import AboutPage          from './Pages/About.js';
+import DogEdit            from './Components/DogEdit.js';
+import NavBar             from './Components/NavBar.js';
+import my404Component     from './Components/404.js';
 
 function SignIn(props) {
   if (!props.isSignedIn) {
@@ -109,6 +111,7 @@ class App extends Component {
               <Route path="/DogEdit" component={DogEdit}/>
               <Route path="/Help" component={HelpPage}/>
               <Route path="/ContactUs" component={ContactUsPage}/>
+              <Route path="/AboutUs" component={AboutPage}/>
               <Route component={my404Component} />
             </Switch>
           </MuiThemeProvider>
@@ -126,9 +129,10 @@ class App extends Component {
             </ClickAwayListener>
             <Switch>
               <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
               <Route path="/Help" component={HelpPage}/>
               <Route path="/ContactUs" component={ContactUsPage}/>
-              <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/AboutUs" component={AboutPage}/>
               <Route component={my404Component} />
             </Switch>
           </MuiThemeProvider>
