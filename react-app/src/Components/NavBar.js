@@ -14,7 +14,7 @@ const NavBarStyle = {
     alignItems:'center',
     backgroundColor: 'rgb(51, 204, 204)',
     width:'100%',
-    height:'10%'
+    height:'10vh'
 };
 const NavBarHeaderStyle = {
     width:'90%',
@@ -43,7 +43,7 @@ class NavBar extends React.Component {
       this.props.history.push('/');
     }
     else{
-      this.props.history.push('/' + e.target.innerText.replace(" ", ""));
+      this.props.history.push('/' + e.target.innerText.replace(new RegExp(" ", "g"), ""));
     }
   }
   
@@ -75,6 +75,8 @@ class NavBar extends React.Component {
           <MenuItem onClick={this.handleLink}>Map</MenuItem>
           <MenuItem onClick={this.handleLink}>Profile</MenuItem>
           <MenuItem onClick={this.handleLink}>Help</MenuItem>
+          <MenuItem onClick={this.handleLink}>About Us</MenuItem>
+          <MenuItem onClick={this.handleLink}>Terms Of Use</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
         </Drawer>
       </div>
@@ -97,6 +99,8 @@ class NavBar extends React.Component {
           <MenuItem onClick={this.handleLink}>Sign In</MenuItem>
           <MenuItem onClick={this.handleLink}>Help</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
+          <MenuItem onClick={this.handleLink}>Terms Of Use</MenuItem>
+          <MenuItem onClick={this.handleLink}>About Us</MenuItem>
         </Drawer>
       </div>
       )

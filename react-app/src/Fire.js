@@ -51,27 +51,6 @@ export function verifyAccount(userId, name, email) {
         })
     }
   })
-  /*
-  if (userRef.transaction(function(currentData) {
-    if (currentData == null) {
-      console.log("creating new user")
-      return {
-        username: name,
-        email: email,
-        dog: {
-            name: "Doggy",
-            breed: "Husky",
-            emotion: "Happy",
-            fur: "Grey",
-            color: "Blue"
-        }
-      }
-    }
-    else {
-      console.log("data already exists")
-      return;
-    }
-  }))*/
   
   return;
 }

@@ -1,15 +1,10 @@
 import React from 'react';
 
-const AboutPageScreenStyle ={
-    height: '90%',
-    width: '10%'
-}
-
 class AboutPage extends React.Component {
-    render(){
-        return(
-            <div className="Page" style={AboutPageScreenStyle}>
-                <h2> About Bark Bark </h2> 
+  render(){
+    return(
+      <div className="Page">
+        <h2> About Bark Bark </h2> 
 
 <h3> <b> If you want to learn more about how Bark Bark was designed and developed; Want to learn about the functionality of Bark Bark you are in the right place. </b></h3>
 

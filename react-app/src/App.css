@@ -1,10 +1,13 @@
 .App {
   text-align: center;
+  height:100%;
+  width:100%;
+  min-height:100vh;
 }
 
-body, #root, .App{
-  height: 100%;
+.Map {
   width: 100%;
+  height:90vh;
 }
 
 .App-logo {
@@ -29,8 +32,9 @@ body, #root, .App{
 }
 
 .Page {
-  width: 100%;
   height:90%;
+  margin:20px;
+  text-align: left;
 }
 
 .dogPreviewBGStyle {
@@ -49,7 +53,3 @@ body, #root, .App{
   80%       { transform: rotate(0);}
 }
 
-@font-face {
-  font-family: PermanentMarker;
-  src: url(PermanentMarker-Regular.ttf);
-}
