@@ -76,6 +76,16 @@ class Map extends Component {
     this.updateDogLocation()
   }
   
+  componentWillUnmount() {
+    var centerElem = document.getElementById("CenterControl")
+    
+    if (centerElem != null) {
+      centerElem.parentNode.removeChild(centerElem)
+    }
+    
+    clearInterval(this.updateLocationTaskId)
+  }
+  
   componentDidMount () {
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: -34.397, lng: 150.644},
@@ -95,6 +105,14 @@ class Map extends Component {
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
+    
+    var updateLocationTask = () => {
+      getLocation().then((newPos) => {
+        this.userLocation = {lat: newPos.coords.latitude, lng: newPos.coords.longitude};
+        this.updateDogLocation();
+      })
+    }
+    this.updateLocationTaskId = setInterval(updateLocationTask, 500)
   }
   
   render() {
