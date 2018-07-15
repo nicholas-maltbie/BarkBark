@@ -53,7 +53,3 @@
   80%       { transform: rotate(0);}
 }
 
-@font-face {
-  font-family: PermanentMarker;
-  src: url(PermanentMarker-Regular.ttf);
-}
