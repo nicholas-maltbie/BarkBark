@@ -21,7 +21,7 @@ import my404Component     from './Components/404.js';
 
 function SignIn(props) {
 
-  uiConfig["callbacks"]["signInSuccessWithAuthResult"] = props.callBackFunc;
+  uiConfig.callbacks.signInSuccessWithAuthResult = props.callBackFunc;
 
   if (!props.isSignedIn) {
     return (
