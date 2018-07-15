@@ -63,13 +63,17 @@ class Map extends Component {
       map: this.map,
     })
     
+    this.userLocation = {lat: 0, lng: 0}
     this.updateLocation = this.updateLocation.bind(this);
+    this.updateDogLocation = () => {
+      this.userMarker.setPosition(this.userLocation)
+    }
   }
   
   updateLocation(newPos) {
-    this.map.setCenter({lat: newPos.coords.latitude, lng: newPos.coords.longitude})
-    
-    this.userMarker.setPosition(this.map.getCenter()) 
+    this.userLocation = {lat: newPos.coords.latitude, lng: newPos.coords.longitude}
+    this.map.setCenter(this.userLocation)
+    this.updateDogLocation()
   }
   
   componentDidMount () {
