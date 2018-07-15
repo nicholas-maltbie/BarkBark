@@ -14,7 +14,7 @@ const NavBarStyle = {
     alignItems:'center',
     backgroundColor: 'rgb(51, 204, 204)',
     width:'100%',
-    height:'10%'
+    height:'10vh'
 };
 const NavBarHeaderStyle = {
     width:'90%',

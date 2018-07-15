@@ -1,15 +1,12 @@
-import React from 'react';
-import GoogleMapReact from 'google-map-react';
+import React, { Component } from 'react';
+import Map from '../Components/Map.js';
 
-
-class MapPage extends React.Component {
-    render(){
-        return(
-            <div className="Page">
-                <GoogleMapReact defaultCenter={this.props.userCenter}/>
-            </div>
-        )
-    }
+class MapPage extends Component {
+  render () {
+    return (
+      <Map className="Map"/>
+    )
+  }
 }
 
 export default MapPage;

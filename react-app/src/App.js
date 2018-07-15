@@ -23,7 +23,7 @@ function SignIn(props) {
   if (!props.isSignedIn) {
     return (
       <div>
-        <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
+        <img src="/static/media/logo.12a6f28b.png" className="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
         <p>By Signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
@@ -37,7 +37,7 @@ function SignIn(props) {
     }
     return (
       <div>
-        <img src="/static/media/logo.12a6f28b.png" class="App-logo" alt="logo"/>
+        <img src="/static/media/logo.12a6f28b.png" className="App-logo" alt="logo"/>
         <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
         <p onClick={() => firebase.auth().signOut()}
           color="#4db8ff">
@@ -63,7 +63,6 @@ class App extends Component {
     
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
     this.handleCADrawerToggle = this.handleCADrawerToggle.bind(this);
-    this.getUserLocation = this.getUserLocation.bind(this);
   }
   // The component's Local state.
   
@@ -72,18 +71,11 @@ class App extends Component {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         (user) => this.setState({isSignedIn: !!user})
     );
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(this.getUserLocation);
-    }
   }
   
   // Make sure we un-register Firebase observers when the component unmounts.
   componentWillUnmount() {
     this.unregisterAuthObserver();
-  }
-
-  getUserLocation(position) {
-    this.setState({userCenter: {lat: position.coords.latitude, long: position.coords.longitude}})
   }
 
   handleDrawerToggle() { //Button Toggle
@@ -105,9 +97,9 @@ class App extends Component {
               <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
             </ClickAwayListener>
             <Switch>
-              <Route path="/Map" render={() => <MapPage userCenter={this.state.userCenter}/>}/>
               <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
               <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/Map"          component={MapPage}/>
               <Route path="/Home"         component={HomePage}/>
               <Route path="/Profile"      component={ProfilePage}/>
               <Route path="/DogEdit"      component={DogEdit}/>
