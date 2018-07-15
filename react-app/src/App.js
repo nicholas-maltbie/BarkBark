@@ -20,6 +20,9 @@ import NavBar             from './Components/NavBar.js';
 import my404Component     from './Components/404.js';
 
 function SignIn(props) {
+
+  uiConfig["callbacks"]["signInSuccessWithAuthResult"] = props.callBackFunc;
+
   if (!props.isSignedIn) {
     return (
       <div>
@@ -63,7 +66,14 @@ class App extends Component {
     
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
     this.handleCADrawerToggle = this.handleCADrawerToggle.bind(this);
+    this.signInCallback = this.signInCallback.bind(this);
   }
+  
+  signInCallback() {
+    this.state.isSignedIn = true;
+    return true;
+  }
+  
   // The component's Local state.
   
   // Listen to the Firebase Auth state and set the local state.
@@ -97,8 +107,10 @@ class App extends Component {
               <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
             </ClickAwayListener>
             <Switch>
-              <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
-              <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route path="/SignIn" render={() => <SignIn 
+                        isSignedIn={this.state.isSignedIn}
+                        callBackFunc={this.signInCallback}/>}/>
+              <Route exact path="/"       component={MapPage}/>
               <Route path="/Map"          component={MapPage}/>
               <Route path="/Home"         component={HomePage}/>
               <Route path="/Profile"      component={ProfilePage}/>
@@ -123,8 +135,12 @@ class App extends Component {
               <NavBar drawerClose={this.state.drawerClose} handleDrawerToggle={this.handleDrawerToggle} isSignedIn={this.state.isSignedIn}/>
             </ClickAwayListener>
             <Switch>
-              <Route exact path="/" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
-              <Route path="/SignIn" render={() => <SignIn isSignedIn={this.state.isSignedIn}/>}/>
+              <Route exact path="/" render={() => <SignIn 
+                        isSignedIn={this.state.isSignedIn} 
+                        callBackFunc={this.signInCallback}/>}/>
+              <Route path="/SignIn" render={() => <SignIn 
+                        isSignedIn={this.state.isSignedIn}
+                        callBackFunc={this.signInCallback}/>}/>
               <Route path="/Help"         component={HelpPage}/>
               <Route path="/AboutUs"      component={AboutPage}/>
               <Route path="/TermsOfUse"   component={TermsPage}/>

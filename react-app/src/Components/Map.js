@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withGoogleMap, GoogleMap } from 'react-google-maps';
 
 // Using this api
 // https://developers.google.com/maps/documentation/javascript/tutorial
