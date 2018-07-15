@@ -9,32 +9,6 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 
-const valueSelectorStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  width:'500px',
-  height:'300px',
-  padding: '5px'
-}
-const valueSelectorBarStyle = {
-  paddingTop: '5px',
-}
-const dogPreviewStyle = {
-  width:'500px',
-  height:'500px'
-}
-const dogEditWindow = {
-  display:'flex',
-  flexDirection:'column',
-  alignItems:'center',
-  width:'510px',
-  height:'800px'
-}
-const dogPreviewAvatarStyle = {
-  width:'100%',
-  height:'100%'
-}
-
 class DogEdit extends React.Component {
   state = {
     backgroundValue: 0,
@@ -62,16 +36,16 @@ class DogEdit extends React.Component {
   render() {
     
     return (
-      <div style={dogEditWindow}>
+      <div className="dogEditWindow">
         <div className="dogPreviewStyle" style={{backgroundColor: this.state.backgroundColorOptions[this.state.backgroundValue]}}>
           <Card>
               <div className="dogPreviewBGStyle"/>
-              <div style={dogPreviewAvatarStyle}>
+              <div className="dogPreviewAvatarStyle">
               </div>
           </Card>
         </div>
-        <div style={valueSelectorStyle}>
-          <AppBar position="static" color="default" style={valueSelectorBarStyle}>
+        <div className="valueDogSelectorStyle">
+          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
             <Typography> Background Color </Typography>
             <Tabs
               value={this.state.backgroundValue}
@@ -86,7 +60,7 @@ class DogEdit extends React.Component {
               <Tab label="Violet" style={{backgroundColor:'Violet', color:'white'}}/>
             </Tabs>
           </AppBar>
-          <AppBar position="static" color="default" style={valueSelectorBarStyle}>
+          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
             <Typography> Fur Color </Typography>
             <Tabs
               value={this.state.furColorValue}
@@ -101,7 +75,7 @@ class DogEdit extends React.Component {
               <Tab label="Violet" style={{backgroundColor:'Violet', color:'white'}}/>
             </Tabs>
           </AppBar>
-          <AppBar position="static" color="default" style={valueSelectorBarStyle}>
+          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
             <Typography> Eye Color </Typography>
             <Tabs
               value={this.state.eyeColorValue}
@@ -116,7 +90,7 @@ class DogEdit extends React.Component {
               <Tab label="Violet" style={{backgroundColor:'Violet', color:'white'}}/>
             </Tabs>
           </AppBar>
-          <AppBar position="static" color="default" style={valueSelectorBarStyle}>
+          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
             <Typography> Breed </Typography>
             <Tabs
               value={this.state.breedValue}
