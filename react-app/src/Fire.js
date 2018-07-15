@@ -30,6 +30,11 @@ export const uiConfig = {
   ]
 };
 
+export function getUserAvatar(){
+    var storageRef = firebase.storage().ref();
+    var dogRef = storageRef.child('Dog');
+}
+
 export function verifyAccount(userId, name, email) {
   var ref = firebase.database().ref()
   

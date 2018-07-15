@@ -45,6 +45,50 @@
   width:500px;
   height:500px;
 }
+.valueDogSelectorStyle {
+  display: flex;
+  flex-direction: column;
+  width:500px;
+  height:300px;
+  padding: 5px;
+}
+.valueDogSelectorBarStyle {
+  padding-top: 5px;
+}
+.dogEditWindow {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:510px;
+  height:800px;
+}
+.dogPreviewAvatarStyle {
+  width:100%;
+  height:100%;
+}
+#ProfilePageScreenStyle {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 5%;
+}
+.ProfileHeaderStyle {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ProfileExpansionTab {
+  width: 80%;
+  height: 100%;
+}
+.ProfileHeaderAvatarStyle {
+  width:160px;
+  height:160px;
+  border-radius:100%;
+  background-color:gray;
+}
 
 @keyframes swing {
   0%, 100%  { transform: rotate(-10deg); }
