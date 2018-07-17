@@ -43,6 +43,24 @@ function CenterControl(controlDiv, map) {
                                                   lng: newPos.coords.longitude})
     );
   });
+}
+
+function BarkControl(controlDiv, map) {
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.className = "BarkControl";
+  controlUI.title = 'Make a bark';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.innerHTML = 'Bark!';
+  controlUI.appendChild(controlText);
+
+  // Setup the click event listeners: simply set the map to Chicago.
+  controlUI.addEventListener('click', function() {
+    console.log("Make bark")
+  });
 
 }
 
@@ -78,9 +96,13 @@ class Map extends Component {
   
   componentWillUnmount() {
     var centerElem = document.getElementById("CenterControl")
+    var barkElem = document.getElementById("BarkControl")
     
     if (centerElem != null) {
       centerElem.parentNode.removeChild(centerElem)
+    }
+    if (barkElem != null) {
+      barkElem.parentNode.removeChild(barkElem)
     }
     
     clearInterval(this.updateLocationTaskId)
@@ -100,8 +122,14 @@ class Map extends Component {
     var centerControlDiv = document.createElement('div');
     centerControlDiv.setAttribute("id", "CenterControl");
     var centerControl = new CenterControl(centerControlDiv, this.map);
+    
+    var barkControlDiv = document.createElement('div');
+    barkControlDiv.setAttribute("id", "BarkControl");
+    var barkControl = new BarkControl(barkControlDiv, this.map);
 
+    barkControlDiv.index = 1;
     centerControlDiv.index = 1;
+    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(barkControlDiv);
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
