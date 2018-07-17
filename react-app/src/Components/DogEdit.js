@@ -111,8 +111,4 @@ class DogEdit extends React.Component {
   }
 }
 
-DogEdit.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
 export default DogEdit;

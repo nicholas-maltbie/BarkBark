@@ -35,6 +35,7 @@ function SignIn(props) {
   }
   else {
     var user = firebase.auth().currentUser;
+    console.log(user);
     if (user != null) {
       verifyAccount(user.uid, user.displayName, user.email)
     }
@@ -61,7 +62,8 @@ class App extends Component {
       userCenter: {
         lat: 0,
         long: 0
-      }
+      },
+      userId: 0
     };
     
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
@@ -75,12 +77,17 @@ class App extends Component {
   }
   
   // The component's Local state.
-  
   // Listen to the Firebase Auth state and set the local state.
   componentDidMount() {
+    console.log(this.state.isSignedIn);
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         (user) => this.setState({isSignedIn: !!user})
     );
+    var user = firebase.auth().currentUser;
+    if(user != null){
+      this.setState({userId: user.uid});
+    }
+    
   }
   
   // Make sure we un-register Firebase observers when the component unmounts.
@@ -113,7 +120,7 @@ class App extends Component {
               <Route exact path="/"       component={MapPage}/>
               <Route path="/Map"          component={MapPage}/>
               <Route path="/Home"         component={HomePage}/>
-              <Route path="/Profile"      component={ProfilePage}/>
+              <Route path="/Profile"      render={() => <ProfilePage userId={this.state.userId}/>}/>
               <Route path="/DogEdit"      component={DogEdit}/>
               <Route path="/Help"         component={HelpPage}/>
               <Route path="/AboutUs"      component={AboutPage}/>
