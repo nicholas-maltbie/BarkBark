@@ -34,10 +34,6 @@ function SignIn(props) {
     )
   }
   else {
-    var user = firebase.auth().currentUser;
-    if (user != null) {
-      verifyAccount(user.uid, user.displayName, user.email)
-    }
     return (
       <div>
         <img src="/static/media/logo.12a6f28b.png" className="App-logo" alt="logo"/>
@@ -71,7 +67,6 @@ class App extends Component {
   
   signInCallback() {
     this.state.isSignedIn = true;
-    return true;
   }
   
   // The component's Local state.
@@ -79,8 +74,16 @@ class App extends Component {
   // Listen to the Firebase Auth state and set the local state.
   componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
-        (user) => this.setState({isSignedIn: !!user})
+      (user) => {
+        this.setState({
+          isSignedIn: !!user
+        })
+        if (user != null) {
+          verifyAccount(user.uid, user.displayName, user.email)
+        }
+      }
     );
+    return true;
   }
   
   // Make sure we un-register Firebase observers when the component unmounts.

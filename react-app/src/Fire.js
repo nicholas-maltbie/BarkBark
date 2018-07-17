@@ -38,12 +38,14 @@ export function getUserAvatar(){
 export function verifyAccount(userId, name, email) {
   var ref = firebase.database().ref()
   
-  ref.child("users/" + userId).once("value", function (snapshot) {
+  var userRef = ref.child("users/" + userId);
+  
+  userRef.once("value").then(function (snapshot) {
     if (snapshot.val() != null) {
-        console.log("User exists")
+        //console.log("User exists")
     }
     else {
-        console.log("User doesn't exist")
+        //console.log("User doesn't exist")
         ref.child("users/" + userId).set({
             username: name,
             email: email,
