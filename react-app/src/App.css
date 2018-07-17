@@ -6,23 +6,34 @@
 }
 
 .BarkControl {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  text-align: center;
+  vertical-align: middle;
   background-color: #fff;
   border: 2px solid #fff;
-  border-radius: 3px;
+  border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0,0,0,.3);
   cursor: pointer;
   text-align: center;
   margin: 10px;
+  margin-left: 0;
 }
 
 .CenterControl {
+  width: 50px;
+  height: 50px;
+  text-align: center;
   background-color: #fff;
   border: 2px solid #fff;
-  border-radius: 3px;
+  border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0,0,0,.3);
   cursor: pointer;
   text-align: center;
   margin: 10px;
+  margin-left: 0;
 }
 
 .Map {
