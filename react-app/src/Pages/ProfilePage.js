@@ -17,6 +17,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import ContentCreate from 'material-ui/svg-icons/content/create.js';
 import DogEdit from '../Components/DogEdit.js';
+import { getUserAvatar } from '../Fire.js';
 
 class ProfilePage extends React.Component {
     constructor(props){
@@ -24,9 +25,15 @@ class ProfilePage extends React.Component {
         
         this.state = {
             expanded: null,
-            dialogToggle: false
+            dialogToggle: false,
+            userAvatarUrl: "",
+            userAvatarBG: ""
         }
         this.toggleDialog = this.toggleDialog.bind(this);
+    }
+
+    componentDidMount() {
+        this.displayUserAvatar(this.props.userId);
     }
 
     handleExpansion(event, panel){
@@ -39,14 +46,19 @@ class ProfilePage extends React.Component {
             dialogToggle: !this.state.dialogToggle
         });
     }
+    async displayUserAvatar(userId){
+        var userInfo = await getUserAvatar(userId);
+        this.setState({ userAvatarUrl: userInfo});
+    }
     render(){
         return(
             <div className="Page" id="ProfilePageScreenStyle">
                 <Card className="ProfileHeaderStyle">
                     <CardContent className="ProfileHeaderAvatarStyle">
-                        <Button variant="fab" color="secondary" aria-label="edit" onClick={this.toggleDialog}>
+                        <Button  className="ProfileEditAvatarButton" variant="fab" mini color="primary" aria-label="Edit" onClick={this.toggleDialog}>
                             <ContentCreate/>
                         </Button>
+                        <img src={this.state.userAvatarUrl} alt="UserAvatar" className="ProfileHeaderAvatarImage"/>
                     </CardContent>
                     <CardContent>
                         <Typography variant="headline" component="h2">

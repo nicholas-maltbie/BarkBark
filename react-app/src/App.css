@@ -97,7 +97,17 @@
   width:160px;
   height:160px;
   border-radius:100%;
-  background-color:gray;
+  background-color:lightgray;
+}
+.ProfileHeaderAvatarImage {
+  width:100%;
+  height:100%;
+  position: relative;
+  top: -20%;
+}
+.ProfileEditAvatarButton {
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes swing {
