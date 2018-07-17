@@ -69,6 +69,7 @@ class App extends Component {
   
   signInCallback() {
     this.state.isSignedIn = true;
+    return true;
   }
   
   // The component's Local state.
