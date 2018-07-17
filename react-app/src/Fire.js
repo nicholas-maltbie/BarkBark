@@ -48,10 +48,16 @@ export async function getUserAvatar(userId){
     return {default: defaultUrl , data: userInfo};
 }
 
-export function updateUserAvatar(userId, bgColor){
+export function updateUserAvatar(userId, bgColor, breed, emotion, fur){
     var dbRef = firebase.database().ref();
-    dbRef.child('users/' + userId).child('dog').update({
-        color: bgColor,
+    dbRef.child('users/' + userId).update({
+        dog: {
+            breed: "Husky",
+            color: bgColor,
+            emotion: "Happy",
+            fur: "Grey",
+            name: "Doggy"
+        }
     });
 }
 export function verifyAccount(userId, name, email) {

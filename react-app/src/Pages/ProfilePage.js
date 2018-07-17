@@ -69,7 +69,7 @@ class ProfilePage extends React.Component {
             userEmotion: emotion,
             userFur: fur,
         });
-        updateUserAvatar(this.props.userId, this.state.userBG);
+        updateUserAvatar(this.props.userId, bg, breed, emotion, fur);
     }
     render(){
         return(
