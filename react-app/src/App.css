@@ -117,3 +117,29 @@
   80%       { transform: rotate(0);}
 }
 
+
+#ContactPageScreenStyle{
+	height: 100%;
+    width:50%;
+    display: flex;
+    flex-Direction:column;
+    align-Items:center;
+}
+
+.Contact-Title {
+	font-size: 30px;
+	margin-top: -30px;
+	margin-bottom: -40px; 
+	padding-bottom : -10px; 
+}
+
+.Contact-logo {
+  animation: swing 3s infinite ease-in-out;
+  padding: 5px;
+  height: 100px;
+  margin-bottom: 5px;
+}
+.Contact-Button {
+	padding: 15px;
+	
+}
