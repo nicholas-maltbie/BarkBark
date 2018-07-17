@@ -19,7 +19,8 @@ const NavBarStyle = {
 const NavBarHeaderStyle = {
     width:'90%',
     textAlign: 'center',
-    fontSize:'24px'
+    fontSize:'24px',
+    fontFamily: 'Gaegu'
 };
 const NavBarButtonStyle = {
     width:'5%'

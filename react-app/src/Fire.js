@@ -45,9 +45,15 @@ export async function getUserAvatar(userId){
     var storageRef = firebase.storage().ref();
     var dogRef = storageRef.child('Dog');
     var defaultUrl = await dogRef.child("Husky_Full.png").getDownloadURL();
-    return {default: defaultUrl , userInfo: userInfo};
+    return {default: defaultUrl , data: userInfo};
 }
 
+export function updateUserAvatar(userId, bgColor){
+    var dbRef = firebase.database().ref();
+    dbRef.child('users/' + userId).child('dog').update({
+        color: bgColor,
+    });
+}
 export function verifyAccount(userId, name, email) {
   var ref = firebase.database().ref()
   ref.child("users/" + userId).once("value", function (snapshot) {

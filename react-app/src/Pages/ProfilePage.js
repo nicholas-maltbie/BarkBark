@@ -17,7 +17,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import ContentCreate from 'material-ui/svg-icons/content/create.js';
 import DogEdit from '../Components/DogEdit.js';
-import { getUserAvatar } from '../Fire.js';
+import { getUserAvatar, updateUserAvatar } from '../Fire.js';
 
 class ProfilePage extends React.Component {
     constructor(props){
@@ -27,13 +27,17 @@ class ProfilePage extends React.Component {
             expanded: null,
             dialogToggle: false,
             userAvatarUrl: "",
-            userAvatarBG: ""
+            userBG: "",
+            userBreed: "",
+            userEmotion: "",
+            userFur: ""
         }
         this.toggleDialog = this.toggleDialog.bind(this);
+        this.avatarChange = this.avatarChange.bind(this);
     }
 
     componentDidMount() {
-        this.displayUserAvatar(this.props.userId);
+        this.displayUserInfo(this.props.userId);
     }
 
     handleExpansion(event, panel){
@@ -46,15 +50,32 @@ class ProfilePage extends React.Component {
             dialogToggle: !this.state.dialogToggle
         });
     }
-    async displayUserAvatar(userId){
+    async displayUserInfo(userId){
         var userInfo = await getUserAvatar(userId);
-        this.setState({ userAvatarUrl: userInfo.default, userAvatarBG: userInfo.userInfo.dog.color});
+        this.setState({ 
+            userName: userInfo.data.username,
+            userAvatarUrl: userInfo.default, 
+            userBG: userInfo.data.dog.color,
+            userBreed: userInfo.data.dog.breed,
+            userEmotion: userInfo.data.dog.emotion,
+            userFur: userInfo.data.dog.fur,
+        });
+    }
+
+    avatarChange(bg, breed, emotion, fur) {
+        this.setState({ 
+            userBG: bg,
+            userBreed: breed,
+            userEmotion: emotion,
+            userFur: fur,
+        });
+        updateUserAvatar(this.props.userId, this.state.userBG);
     }
     render(){
         return(
             <div className="Page" id="ProfilePageScreenStyle">
                 <Card className="ProfileHeaderStyle">
-                    <CardContent className="ProfileHeaderAvatarStyle" style={{backgroundColor: this.state.userAvatarBG}}>
+                    <CardContent className="ProfileHeaderAvatarStyle" style={{backgroundColor: this.state.userBG}}>
                         <Button  className="ProfileEditAvatarButton" variant="fab" mini color="primary" aria-label="Edit" onClick={this.toggleDialog}>
                             <ContentCreate/>
                         </Button>
@@ -62,13 +83,16 @@ class ProfilePage extends React.Component {
                     </CardContent>
                     <CardContent>
                         <Typography variant="headline" component="h2">
-                            Ken Baker
+                            {this.state.userName}
                         </Typography>
                     </CardContent>
                 </Card>
                 <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
                     <DialogTitle>Edit Dog Avatar</DialogTitle>
-                    <DogEdit/>
+                    <DogEdit default={this.state.userAvatarUrl} userBG={this.state.userBG} 
+                        userBreed={this.state.userBreed} userEmotion={this.state.userEmotion} 
+                        userFur={this.state.userFur} dogEditChange={this.avatarChange}
+                    />
                 </Dialog>
                 <ExpansionPanel expanded={this.state.expanded == "UserPanel"} onChange={(e) => this.handleExpansion(e, "UserPanel")}
                 className="ProfileExpansionTab">

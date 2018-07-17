@@ -8,41 +8,62 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
 
 class DogEdit extends React.Component {
-  state = {
-    backgroundValue: 0,
-    furColorValue: 0,
-    eyeColorValue: 0,
-    breedValue: 0,
-    backgroundColorOptions: ['Blue', 'Green', 'Yellow', 'Orange', 'Violet']
+  constructor(props){
+    super(props);
+    
+    this.state = {
+      backgroundValue: "",
+      furValue: "",
+      emotionValue: "",
+      breedValue: "",
+      backgroundColorOptions: ['Blue', 'Green', 'Yellow', 'Orange', 'Violet'],
+      furColorOptions: ['Gray', 'Black', 'Tan'],
+      emotionOptions: ['Happy', 'Sad'],
+      breedOptions: ['Boxer', 'Chihuahua', 'Husky', 'Labrador', 'Poodle', 'Spaniel']
+    };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      backgroundValue: this.props.userBG,
+      furValue: this.props.userFur,
+      emotionValue: this.props.userEmotion,
+      breedValue: this.props.userBreed,
+    })
   };
+  
 
   handleChange = (event, value, selector) => {
     if(selector == 'BGColor'){
-      this.setState({ backgroundValue: value });
+      this.setState({ backgroundValue: this.state.backgroundColorOptions[value] });
     }
-    else if(selector == 'FurColor'){
-      this.setState({ furColorValue: value });
+    else if(selector == 'Fur'){
+      this.setState({ furValue: this.state.furColorOptions[value] });
     }
-    else if(selector == 'EyeColor'){
-      this.setState({ eyeColorValue: value });
+    else if(selector == 'Emotion'){
+      this.setState({ emotionValue: this.state.emotionOptions[value] });
     }
     else if(selector == 'Breed'){
-      this.setState({ breedValue: value });
+      this.setState({ breedValue: this.state.breedOptions[value] });
     }
   };
+
+  handleSubmit() {
+    console.log(this.state);
+    this.props.dogEditChange(this.state.backgroundValue, this.state.breedValue, this.state.emotionValue, this.state.furValue);
+  }
 
   render() {
     
     return (
       <div className="dogEditWindow">
-        <div className="dogPreviewStyle" style={{backgroundColor: this.state.backgroundColorOptions[this.state.backgroundValue]}}>
-          <Card>
-              <div className="dogPreviewBGStyle"/>
-              <div className="dogPreviewAvatarStyle">
-              </div>
-          </Card>
+        <div className="dogPreviewStyle" style={{backgroundColor: this.state.backgroundValue}}>
+            <img src={this.props.default} alt="UserAvatar" className="dogPreviewAvatarImageStyle"/>
         </div>
         <div className="valueDogSelectorStyle">
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
@@ -63,31 +84,26 @@ class DogEdit extends React.Component {
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
             <Typography> Fur Color </Typography>
             <Tabs
-              value={this.state.furColorValue}
-              onChange={(event, value) => this.handleChange(event, value, 'FurColor')}
+              value={this.state.furValue}
+              onChange={(event, value) => this.handleChange(event, value, 'Fur')}
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Blue" style={{backgroundColor:'blue', color:'white'}}/>
-              <Tab label="Green" style={{backgroundColor:'Green', color:'white'}}/>
-              <Tab label="Yellow" style={{backgroundColor:'Yellow', color:'white'}}/>
-              <Tab label="Orange" style={{backgroundColor:'Orange', color:'white'}}/>
-              <Tab label="Violet" style={{backgroundColor:'Violet', color:'white'}}/>
+              <Tab label="Gray" style={{backgroundColor:'Gray', color:'white'}}/>
+              <Tab label="Black" style={{backgroundColor:'Black', color:'white'}}/>
+              <Tab label="Tan" style={{backgroundColor:'Tan', color:'white'}}/>
             </Tabs>
           </AppBar>
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-            <Typography> Eye Color </Typography>
+            <Typography> Emotion </Typography>
             <Tabs
               value={this.state.eyeColorValue}
-              onChange={(event, value) => this.handleChange(event, value, 'EyeColor')}
+              onChange={(event, value) => this.handleChange(event, value, 'Emotion')}
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Blue" style={{backgroundColor:'blue', color:'white'}}/>
-              <Tab label="Green" style={{backgroundColor:'Green', color:'white'}}/>
-              <Tab label="Yellow" style={{backgroundColor:'Yellow', color:'white'}}/>
-              <Tab label="Orange" style={{backgroundColor:'Orange', color:'white'}}/>
-              <Tab label="Violet" style={{backgroundColor:'Violet', color:'white'}}/>
+              <Tab label="Happy" style={{backgroundColor:'Orange', color:'white'}}/>
+              <Tab label="Sad" style={{backgroundColor:'Gray', color:'white'}}/>
             </Tabs>
           </AppBar>
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
@@ -98,13 +114,15 @@ class DogEdit extends React.Component {
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Poodle"/>
-              <Tab label="Labrador" />
-              <Tab label="Pitbull" />
-              <Tab label="German Shepard" />
+              <Tab label="Boxer"/>
+              <Tab label="Chihuahua" />
               <Tab label="Husky" />
+              <Tab label="Labrador" />
+              <Tab label="Poodle" />
+              <Tab label="Spaniel" />
             </Tabs>
           </AppBar>
+          <Button className="dogEditSubmit" variant="contained" onClick={this.handleSubmit}> Submit </Button>
         </div>
       </div>
     );

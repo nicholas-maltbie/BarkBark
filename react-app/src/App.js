@@ -58,13 +58,14 @@ class App extends Component {
         lat: 0,
         long: 0
       },
-      userId: 0
+      userId: 0,
+      userName: "",
+      userEmail: ""
     };
     
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
     this.handleCADrawerToggle = this.handleCADrawerToggle.bind(this);
     this.signInCallback = this.signInCallback.bind(this);
-    this.setUserFirebase = this.setUserFirebase.bind(this);
   }
   
   signInCallback() {
@@ -77,12 +78,14 @@ class App extends Component {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         this.setState({
-          isSignedIn: !!user
+          isSignedIn: !!user,
+          userId: user.uid,
+          userName: user.displayName,
+          userEmail: user.email
         })
         if (user != null) {
-          verifyAccount(user.uid, user.displayName, user.email)
+          verifyAccount(user.uid, user.displayName, user.email);
         }
-        this.setUserFirebase();
       }
     );
   }
@@ -90,12 +93,6 @@ class App extends Component {
   // Make sure we un-register Firebase observers when the component unmounts.
   componentWillUnmount() {
     this.unregisterAuthObserver();
-  }
-
-  setUserFirebase() {
-    if(this.state.isSignedIn){
-      this.setState({userId: firebase.auth().currentUser.uid});
-    }
   }
 
   handleDrawerToggle() { //Button Toggle
