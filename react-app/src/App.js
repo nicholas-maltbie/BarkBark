@@ -64,6 +64,7 @@ class App extends Component {
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
     this.handleCADrawerToggle = this.handleCADrawerToggle.bind(this);
     this.signInCallback = this.signInCallback.bind(this);
+    this.setUserFirebase = this.setUserFirebase.bind(this);
   }
   
   signInCallback() {
@@ -73,7 +74,6 @@ class App extends Component {
   // The component's Local state.
   // Listen to the Firebase Auth state and set the local state.
   componentDidMount() {
-    console.log(this.state.isSignedIn);
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         this.setState({
@@ -82,18 +82,20 @@ class App extends Component {
         if (user != null) {
           verifyAccount(user.uid, user.displayName, user.email)
         }
+        this.setUserFirebase();
       }
     );
-    var user = firebase.auth().currentUser;
-    if(user != null){
-      this.setState({userId: user.uid});
-    }
-    
   }
   
   // Make sure we un-register Firebase observers when the component unmounts.
   componentWillUnmount() {
     this.unregisterAuthObserver();
+  }
+
+  setUserFirebase() {
+    if(this.state.isSignedIn){
+      this.setState({userId: firebase.auth().currentUser.uid});
+    }
   }
 
   handleDrawerToggle() { //Button Toggle

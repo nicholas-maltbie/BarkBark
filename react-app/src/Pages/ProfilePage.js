@@ -48,13 +48,13 @@ class ProfilePage extends React.Component {
     }
     async displayUserAvatar(userId){
         var userInfo = await getUserAvatar(userId);
-        this.setState({ userAvatarUrl: userInfo});
+        this.setState({ userAvatarUrl: userInfo.default, userAvatarBG: userInfo.userInfo.dog.color});
     }
     render(){
         return(
             <div className="Page" id="ProfilePageScreenStyle">
                 <Card className="ProfileHeaderStyle">
-                    <CardContent className="ProfileHeaderAvatarStyle">
+                    <CardContent className="ProfileHeaderAvatarStyle" style={{backgroundColor: this.state.userAvatarBG}}>
                         <Button  className="ProfileEditAvatarButton" variant="fab" mini color="primary" aria-label="Edit" onClick={this.toggleDialog}>
                             <ContentCreate/>
                         </Button>

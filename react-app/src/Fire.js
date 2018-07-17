@@ -30,23 +30,22 @@ export const uiConfig = {
   ]
 };
 
-export function getUserInfo(userId){
+function getUserInfo(userId){
     var dbRef = firebase.database().ref('/users/' + userId).once("value")
     .then(function (snapshot) {
         if (snapshot.val() != null) {
             return snapshot.val();
         }
-        else {
-            return "hello";
-        }
     });
+    return dbRef;
 }
 
-export function getUserAvatar(userId){
-    var userInfo = getUserInfo(userId);
+export async function getUserAvatar(userId){
+    var userInfo = await getUserInfo(userId);
     var storageRef = firebase.storage().ref();
     var dogRef = storageRef.child('Dog');
-    return dogRef.child("Husky_Full.png").getDownloadURL();
+    var defaultUrl = await dogRef.child("Husky_Full.png").getDownloadURL();
+    return {default: defaultUrl , userInfo: userInfo};
 }
 
 export function verifyAccount(userId, name, email) {
