@@ -3,13 +3,6 @@ import TextField from '@material-ui/core/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
 
-const ContactUsStyle = {
-    height:'100%',
-    width:'50%',
-    display:'flex',
-    flexDirection:'column',
-    alignItems:'center'
-}
 
 class ContactUsPage extends React.Component {
     constructor(props){
@@ -18,7 +11,7 @@ class ContactUsPage extends React.Component {
         this.state = {
             name: "",
             email: "",
-            message: ""
+            message: "",
         }
     }
 
@@ -27,8 +20,15 @@ class ContactUsPage extends React.Component {
     }
     render(){
         return(
-            <div className="Page">
-                <div style={ContactUsStyle}>
+			<form action = "mailto:meghnagupta.678@gmail.com" method = "post" enctype = "text/plain">
+				<div className="Page" id = "ContactPageScreenStyle">  
+				<p>
+				<img src="/static/media/logo.12a6f28b.png" className="Contact-logo" alt="logo"/>	
+				<img src="/static/media/logo.12a6f28b.png" className="Contact-logo" alt="logo"/>
+				</p>
+				<div className = "Contact-Title" >
+				<h2> Contact Us </h2>
+				</div>
                     <TextField required
                         id="NameContactForm"
                         label="Name"
@@ -37,6 +37,7 @@ class ContactUsPage extends React.Component {
                         onChange={(e) => this.handleChange(e, 'name')}
                         margin="normal"
                     />
+					
                     <TextField required
                         id="EmailContactForm"
                         label="Email"
@@ -45,17 +46,19 @@ class ContactUsPage extends React.Component {
                         onChange={(e) => this.handleChange(e, 'email')}
                         margin="normal"
                     />
-                    <TextField required multiline rows="5"
+                    <TextField required 
                         id="MessageContactForm"
-                        label="Message"
+                        label=" Your Message"
                         className="ContactFormInput"
                         value={this.state.message}
                         onChange={(e) => this.handleChange(e, 'message')}
-                        margin="normal"
+                        margin= "normal"
                     />
-                    <FlatButton/>
-                </div>
-            </div>
+					<div class = "Contact-Button">
+						<input type="submit" value = "Send Message" />
+					</div>
+				</div>
+			</form>  
         )
     }
 }

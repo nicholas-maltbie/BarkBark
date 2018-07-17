@@ -34,7 +34,7 @@ function CenterControl(controlDiv, map) {
 
   // Set CSS for the control interior.
   var controlText = document.createElement('div');
-  controlText.innerHTML = '<img src="https://cdn4.iconfinder.com/data/icons/social-communication/142/target-512.png" width=20px height=20px/>';
+  controlText.innerHTML = '<img src="https://cdn4.iconfinder.com/data/icons/social-communication/142/target-512.png" width=48px height=48px/>';
   controlUI.appendChild(controlText);
 
   // Setup the click event listeners: simply set the map to Chicago.
@@ -89,10 +89,10 @@ class Map extends Component {
   componentDidMount () {
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: -34.397, lng: 150.644},
-      zoom: 16,
+      zoom: 18,
       disableDefaultUI: true,
-      maxZoom: 18,
-      minZoom: 12,
+      maxZoom: 20,
+      minZoom: 15,
     });
     
     this.userMarker.setMap(this.map)

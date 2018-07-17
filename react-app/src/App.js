@@ -70,11 +70,17 @@ class App extends Component {
   
   signInCallback() {
     this.state.isSignedIn = true;
+    return true;
   }
   
   // The component's Local state.
   // Listen to the Firebase Auth state and set the local state.
   componentDidMount() {
+    var elem = document.getElementById("Loading")
+    if (elem != null) {
+      elem.parentNode.removeChild(elem)
+    }
+  
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         this.setState({
