@@ -74,6 +74,11 @@ class App extends Component {
   // The component's Local state.
   // Listen to the Firebase Auth state and set the local state.
   componentDidMount() {
+    var elem = document.getElementById("Loading")
+    if (elem != null) {
+      elem.parentNode.removeChild(elem)
+    }
+  
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         this.setState({
