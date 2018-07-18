@@ -138,7 +138,7 @@ class Map extends Component {
 
     barkControlDiv.index = 1;
     centerControlDiv.index = 1;
-    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(barkControlDiv);
+    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(barkControlDiv);
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
