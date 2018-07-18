@@ -83,14 +83,22 @@ class App extends Component {
   
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
-        this.setState({
-          isSignedIn: !!user,
-          userId: user.uid,
-          userName: user.displayName,
-          userEmail: user.email
-        })
         if (user != null) {
           verifyAccount(user.uid, user.displayName, user.email);
+          this.setState({
+            isSignedIn: true,
+            userId: user.uid,
+            userName: user.displayName,
+            userEmail: user.email
+          })
+        }
+        else {
+          this.setState({
+            isSignedIn: false,
+            userId: "",
+            userName: "",
+            userEmail: ""
+          })
         }
       }
     );
