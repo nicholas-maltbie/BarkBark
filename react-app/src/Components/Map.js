@@ -5,24 +5,30 @@ import React, { Component } from 'react';
 
 const google = window.google;
 
+export var rejected = false;
+
 export const getLocation = () => {
   const geolocation = navigator.geolocation;
 
-  const location = new Promise((resolve, reject) => {
-    if (!geolocation) {
-      reject(new Error('Not Supported'));
-    }
-
-  geolocation.getCurrentPosition((position) => {
-    resolve(position);
-  }, () => {
-    reject (
-      alert("This app requires permission to share your location, https://support.google.com/chrome/answer/142065?hl=en")
-    );
-  });
-  });
-
-  return location
+  
+  if (!rejected) {
+    const location = new Promise((resolve, reject) => {
+      if (!geolocation) {
+        reject(new Error('Not Supported'));
+        rejected = true
+      }
+        geolocation.getCurrentPosition((position) => {
+          resolve(position);
+        }, () => {
+          reject (
+            alert("This app requires permission to share your location, https://support.google.com/chrome/answer/142065?hl=en")
+          );
+          rejected = true
+        });
+    })
+    return location
+  }
+  return new Promise(() => { return {"coords" : {"longitude":0, "latitude":0} } })
 };
 
 function CenterControl(controlDiv, map) {
@@ -43,6 +49,7 @@ function CenterControl(controlDiv, map) {
                                                   lng: newPos.coords.longitude})
     );
   });
+      clearInterval(this.updateLocationTaskId)
 }
 
 function BarkControl(controlDiv, map) {
@@ -105,7 +112,9 @@ class Map extends Component {
       barkElem.parentNode.removeChild(barkElem)
     }
     
-    clearInterval(this.updateLocationTaskId)
+    if (this.updateLocationTaskId != null) {
+      clearInterval(this.updateLocationTaskId)
+    }
   }
   
   componentDidMount () {
@@ -150,4 +159,4 @@ class Map extends Component {
    }
 };
 
-export default Map;
+export default Map;this
