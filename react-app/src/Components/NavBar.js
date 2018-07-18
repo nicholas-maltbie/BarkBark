@@ -17,6 +17,8 @@ const NavBarStyle = {
     height:'10vh'
 };
 
+const navButtonColor = 'white'
+
 const TitleColor = { 
 	color : '#CACACA'
 };
@@ -33,7 +35,8 @@ const NavBarHeaderStyle = {
 	fontWeight: '525'
 };
 const NavBarButtonStyle = {
-    width:'5%'
+    width:'5%',
+    fill:'white'
 };
 
 class NavBar extends React.Component {
@@ -71,7 +74,7 @@ class NavBar extends React.Component {
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon= {<Menu/>}/>
+          icon= {<Menu color={navButtonColor}/>}/>
         <div className="Header" 
           style={NavBarHeaderStyle}>
           <span style = {TitleColor}> Bark </span>
@@ -81,7 +84,7 @@ class NavBar extends React.Component {
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
 			
-          icon={ <Person/>}/>
+          icon={ <Person color={navButtonColor}/>}/>
 		  <div backgroundColor = "#000">
         <Drawer open={!this.props.drawerClose}>
           <MenuItem onClick={this.signOut}>Sign Out</MenuItem>
@@ -103,7 +106,7 @@ class NavBar extends React.Component {
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon={<Menu/>}/>
+          icon={<Menu color={navButtonColor}/>}/>
         <div className="Header" 
           style={NavBarHeaderStyle}>
           <span style = {TitleColor}> Bark </span>
