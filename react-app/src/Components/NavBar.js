@@ -12,15 +12,25 @@ const NavBarStyle = {
     display: 'flex',
     flexDirection: 'row',
     alignItems:'center',
-    backgroundColor: 'rgb(51, 204, 204)',
+    backgroundColor: 'rgb(0,0,0)',
     width:'100%',
     height:'10vh'
 };
+
+const TitleColor = { 
+	color : '#CACACA'
+};
+
+const TitleColor2 = { 
+	color : '#00b3ff'
+};
+
 const NavBarHeaderStyle = {
     width:'90%',
     textAlign: 'center',
-    fontSize:'24px',
-    fontFamily: 'Gaegu'
+    fontSize:'30px',
+    fontFamily: 'Futura, "Trebuchet MS", Arial, sans-serif',
+	fontWeight: '525'
 };
 const NavBarButtonStyle = {
     width:'5%'
@@ -61,15 +71,18 @@ class NavBar extends React.Component {
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon={<Menu/>}/>
+          icon= {<Menu/>}/>
         <div className="Header" 
           style={NavBarHeaderStyle}>
-          Bark Bark
+          <span style = {TitleColor}> Bark </span>
+		  <span style = {TitleColor2}>Bark </span>
         </div>
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon={<Person/>}/>
+			
+          icon={ <Person/>}/>
+		  <div backgroundColor = "#000">
         <Drawer open={!this.props.drawerClose}>
           <MenuItem onClick={this.signOut}>Sign Out</MenuItem>
           <MenuItem onClick={this.handleLink}>Home</MenuItem>
@@ -80,6 +93,7 @@ class NavBar extends React.Component {
           <MenuItem onClick={this.handleLink}>Terms Of Use</MenuItem>
           <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
         </Drawer>
+		</div>
       </div>
       )
     }
@@ -92,7 +106,8 @@ class NavBar extends React.Component {
           icon={<Menu/>}/>
         <div className="Header" 
           style={NavBarHeaderStyle}>
-          Bark Bark
+          <span style = {TitleColor}> Bark </span>
+		  <span style = {TitleColor2}>Bark </span>
         </div>
         <FlatButton 
           style={NavBarButtonStyle}/>

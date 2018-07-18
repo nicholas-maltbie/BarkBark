@@ -100,7 +100,7 @@ class ProfilePage extends React.Component {
                         <Typography> User Settings </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <List> 
+                        <List fontFamily = "sans-serif"> 
                             <ListItem>
                                 <ListItemText primary="Display Name" />
                                 <ListItemSecondaryAction>
