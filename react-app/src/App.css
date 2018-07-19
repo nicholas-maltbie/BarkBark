@@ -155,7 +155,7 @@
 
 #ContactPageScreenStyle{
 	height: 100%;
-    width:50%;
+    width:100%;
     display: flex;
     flex-Direction:column;
     align-Items:center;
@@ -172,7 +172,7 @@
   animation: swing 3s infinite ease-in-out;
   padding: 5px;
   height: 100px;
-  margin-bottom: 5px;
+  margin-bottom:5px;
 }
 .Contact-Button {
 	padding: 15px;

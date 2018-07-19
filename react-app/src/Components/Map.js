@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MakeBark from '../Components/MakeBark.js';
 
 
+=======
+import { MakeBark } from './bark.js';
+>>>>>>> master
 
 // Using this api
 // https://developers.google.com/maps/documentation/javascript/tutorial
@@ -71,7 +75,6 @@ function BarkControl(controlDiv, map) {
 
   // Setup the click event listeners: simply set the map to Chicago.
   controlUI.addEventListener('click', function() {
-    console.log("Make bark");
     //var uitest = new MakeBark;
     //uitest.handleClickOpen();
     //MakeBark.handleClickOpen;
@@ -80,6 +83,7 @@ function BarkControl(controlDiv, map) {
     //UIspace.appendChild(MakeBark);
     //document.appendChild(MakeBark);
     //UIDialog.appendChild(MakeBark);
+    MakeBark()
   });
 
 }
