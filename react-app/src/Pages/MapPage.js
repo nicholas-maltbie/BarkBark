@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import Map from '../Components/Map.js';
+import MakeBark from '../Components/MakeBark.js';
 
 class MapPage extends Component {
   render () {
     return (
-      <Map className="Map"/>
+      <div>
+        <Map className="Map"/>
+        <MakeBark/>
+      </div>
     )
   }
 }
