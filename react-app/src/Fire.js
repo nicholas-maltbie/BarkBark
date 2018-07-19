@@ -30,7 +30,7 @@ export const uiConfig = {
   ]
 };
 
-function getUserInfo(userId){
+function getUser(userId){ //Get snapshot of user in database
     var dbRef = firebase.database().ref('/users/' + userId).once("value")
     .then(function (snapshot) {
         if (snapshot.val() != null) {
@@ -40,15 +40,12 @@ function getUserInfo(userId){
     return dbRef;
 }
 
-export async function getUserAvatar(userId){
-    var userInfo = await getUserInfo(userId);
-    var storageRef = firebase.storage().ref();
-    var dogRef = storageRef.child('Dog');
-    var defaultUrl = await dogRef.child("Husky_Full.png").getDownloadURL();
-    return {default: defaultUrl , data: userInfo};
+export async function getUserInfo(userId){ //Get function for user snapshot
+    var userInfo = await getUser(userId);
+    return userInfo;
 }
 
-export function updateUserAvatar(userId, bgColor, breed, emotion, fur){
+export function updateUserAvatar(userId, avatar){ //Updates avatar in database, avatar passed in is an object
     var dbRef = firebase.database().ref();
     dbRef.child('users/' + userId).update({
         dog: {
@@ -56,10 +53,110 @@ export function updateUserAvatar(userId, bgColor, breed, emotion, fur){
             color: bgColor,
             emotion: "Happy",
             fur: "Grey",
-            name: "Doggy"
+            name: "Doggy",
+            eye: "Grey"
         }
     });
 }
+
+var breeds = ["Boxer", "Chihuahua", "Husky", "Labrador", "Poodle", "Spaniel"];
+var backgroundColors = ["Blue", "Green", "Yellow", "Orange", "Violet"];
+var dataTree = {
+    "Boxer": {
+        "eyes": {
+            'black': "storageName"
+        },
+        "fur": {
+            'white': "storageName"
+        },
+        "emotion": {
+            'happy': "storageName",
+            'sad': "storageName"
+        },
+    },
+    "Chihuahua": {
+        "eyes": {
+            'black': "storageName"
+        },
+        "fur": {
+            'white': "storageName"
+        },
+        "emotion": {
+            'happy': "storageName",
+            'sad': "storageName"
+        },
+    },
+    "Husky": {
+        "eyes": {
+            'black': "storageName"
+        },
+        "fur": {
+            'white': "storageName"
+        },
+        "emotion": {
+            'happy': "storageName",
+            'sad': "storageName"
+        },
+    },
+    "Labrador": {
+        "eyes": {
+            'black': "storageName"
+        },
+        "fur": {
+            'white': "storageName"
+        },
+        "emotion": {
+            'happy': "storageName",
+            'sad': "storageName"
+        },
+    },
+    "Poodle": {
+        "eyes": {
+            'black': "storageName"
+        },
+        "fur": {
+            'white': "storageName"
+        },
+        "emotion": {
+            'happy': "storageName",
+            'sad': "storageName"
+        },
+    },
+    "Spaniel": {
+        "eyes": {
+            'black': "storageName"
+        },
+        "fur": {
+            'out': {
+                'white': "storageName"
+            },
+            'in': {
+                'white': "storageName"
+            }
+        },
+        "emotion": {
+            'happy': "storageName",
+            'sad': "storageName"
+        },
+    },
+}
+
+export function getBreeds() {
+    return breeds;
+}
+export function getBackgroundColors() {
+    return backgroundColors;
+}
+export function getDogOptions(breed){
+    return dataTree[breed];
+}
+export async function getDogPart(breed, part, value){
+    var storageName = dataTree[breed][part][value];
+    var storage = firebase.storage().ref().child('Dog');
+    var dogPart = await storage.child(storageName).getDownloadURL();
+    return dogPart;
+}
+
 export function verifyAccount(userId, name, email) {
   var ref = firebase.database().ref()
   ref.child("users/" + userId).once("value", function (snapshot) {

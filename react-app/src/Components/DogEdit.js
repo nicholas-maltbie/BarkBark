@@ -9,53 +9,121 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import { getDogOptions, getBreeds, getBackgroundColors, getUserInfo, getDogPart } from '../Fire.js';
 
 class DogEdit extends React.Component {
   constructor(props){
     super(props);
     
     this.state = {
-      backgroundValue: "",
-      furValue: "",
-      emotionValue: "",
-      breedValue: "",
-      backgroundColorOptions: ['Blue', 'Green', 'Yellow', 'Orange', 'Violet'],
-      furColorOptions: ['Gray', 'Black', 'Tan'],
-      emotionOptions: ['Happy', 'Sad'],
-      breedOptions: ['Boxer', 'Chihuahua', 'Husky', 'Labrador', 'Poodle', 'Spaniel']
+      values: {
+        backgroundValue: "",
+        furValue: "",
+        emotionValue: "",
+        breedValue: "",
+        eyeValue: "",
+      },
+      options: {
+        breedOptions: {},
+        backgroundColorOptions: {},
+        eyeOptions: {},
+        furOptions: {},
+        emotionOptions: {},
+      },
+      initialLoad: true
     };
-
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
+    var breedOptions = getBreeds();
+    var backgroundOptions = getBackgroundColors();
+    var userInfo = getUserInfo();
+    var dogOptions = getDogOptions(userInfo.dog.breed);
     this.setState({
-      backgroundValue: this.props.userBG,
-      furValue: this.props.userFur,
-      emotionValue: this.props.userEmotion,
-      breedValue: this.props.userBreed,
-    })
+      values: {
+        backgroundValue: userInfo.dog.color,
+        furValue: userInfo.dog.fur,
+        emotionValue: userInfo.dog.emotion,
+        breedValue: userInfo.dog.breed,
+        eyeValue: userInfo.dog.eyes,
+      },
+      options: {
+        breedOptions: breedOptions,
+        backgroundColorOptions: backgroundOptions,
+        eyeOptions: dogOptions.eyes,
+        furOptions: dogOptions.fur,
+        emotionOptions: dogOptions.emotion,
+      }
+    });
+    updateCanvas();
+    loadOptions();
   };
+
+  componentWillUnmount(){
+    this.setState({initialLoad: false});
+  }
+
+  handleChangeBreed(){
+    var dogOptions = getDogOptions(this.state.values.breedValue);
+    this.setState({
+      options: {
+        eyeOptions: dogOptions.eyes,
+        furOptions: dogOptions.fur,
+        emotionOptions: dogOptions.emotion
+      }
+    });
+  }
+
+  updateCanvas() { 
+    if(this.state.initialLoad){
+      var fur = getDogPart(this.state.breedValue, "fur", this.state.values.furValue);
+      var eyes = (this.state.breedValue, "eyes", this.state.values.eyeValue);
+      var emotion = getDogPart(this.state.breedValue, "emotion", this.state.values.emotionValue);
+      var breed = getDogPart(this.state.breedValue, "fur", this.state.values.furValue);
+      this.setState({initialLoad: false});
+    }
+    var c=document.getElementsByClassName("dogPreviewAvatarImageStyle");
+    var ctx=c.getContext("2d");
+    var imageObj1 = new Image();
+    var imageObj2 = new Image();
+    imageObj1.src = "1.png"
+    imageObj1.onload = function() {
+      ctx.drawImage(imageObj1, 0, 0, 328, 526);
+      imageObj2.src = "2.png";
+      imageObj2.onload = function() {
+          ctx.drawImage(imageObj2, 15, 85, 300, 300);
+          var img = c.toDataURL("image/png");
+          document.write('<img src="' + img + '" width="328" height="526"/>');
+      }
+    };
+  }
+
+  loadOptions(options) {
+    options.forEach()
+
+  }
   
 
   handleChange = (event, value, selector) => {
     if(selector == 'BGColor'){
-      this.setState({ backgroundValue: this.state.backgroundColorOptions[value] });
+      this.setState({ backgroundValue: this.state.options.backgroundOptions[Object.keys(this.state.options.backgroundOptions)[value]] });
     }
     else if(selector == 'Fur'){
-      this.setState({ furValue: this.state.furColorOptions[value] });
+      this.setState({ furValue: this.state.options.furOptions[Object.keys(this.state.options.furOptions)[value]] });
     }
     else if(selector == 'Emotion'){
-      this.setState({ emotionValue: this.state.emotionOptions[value] });
+      this.setState({ emotionValue: this.state.options.emotionOptions[Object.keys(this.state.options.emotionOptions)[value]] });
     }
     else if(selector == 'Breed'){
-      this.setState({ breedValue: this.state.breedOptions[value] });
+      this.setState({ breedValue: this.state.options.breedOptions[Object.keys(this.state.options.breedOptions)[value]] });
+      this.handleChangeBreed();
     }
+    this.updateCanvas
   };
 
   handleSubmit() {
-    console.log(this.state);
-    this.props.dogEditChange(this.state.backgroundValue, this.state.breedValue, this.state.emotionValue, this.state.furValue);
+    updateUserAvatar(this.props.userId, this.state.values);
   }
 
   render() {
@@ -63,7 +131,7 @@ class DogEdit extends React.Component {
     return (
       <div className="dogEditWindow">
         <div className="dogPreviewStyle" style={{backgroundColor: this.state.backgroundValue}}>
-            <img src={this.props.default} alt="UserAvatar" className="dogPreviewAvatarImageStyle"/>
+          <canvas className="dogPreviewAvatarImageStyle"/>
         </div>
         <div className="valueDogSelectorStyle">
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
