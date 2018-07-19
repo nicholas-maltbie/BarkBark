@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { MakeBark } from './bark.js';
 
 // Using this api
 // https://developers.google.com/maps/documentation/javascript/tutorial
@@ -66,7 +67,7 @@ function BarkControl(controlDiv, map) {
 
   // Setup the click event listeners: simply set the map to Chicago.
   controlUI.addEventListener('click', function() {
-    console.log("Make bark")
+    MakeBark()
   });
 
 }
