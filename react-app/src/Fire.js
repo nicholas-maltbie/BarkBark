@@ -75,6 +75,7 @@ export function verifyAccount(userId, name, email) {
                 breed: "Husky",
                 emotion: "Happy",
                 fur: "Grey",
+                eye: "Blue",
                 color: "Blue"
             }
         })
