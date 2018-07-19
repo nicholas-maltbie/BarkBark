@@ -20,20 +20,21 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 class MakeBark extends React.Component{
     constructor(props){
         super(props);
-    
+    console.log(props)
     this.state = {
         open: false,
+        updateFn: props.updateFn,
       }
-      //this.handleClickOpen=this.handleClickOpen.bind(this);
-      //this.handleClose=this.handleClose.bind(this);
+      this.handleClickOpen=this.handleClickOpen.bind(this);
+      this.handleClose=this.handleClose.bind(this);
     }
     
       handleClickOpen = () => {
-        this.setState({ open: true });
+        this.props.updateFn(true)
       };
     
       handleClose = () => {
-        this.setState({ open: false });
+        this.props.updateFn(false)
       };
     
     
@@ -41,12 +42,12 @@ class MakeBark extends React.Component{
         return (
           <div>
             <Dialog
-              open={this.state.open}
+              open={this.props.open}
               onClose={this.handleClose}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">{"Bark!?"}</DialogTitle>
+              <DialogTitle id="alert-dialog-title">{"Bark?"}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                  Are you sure you want to bark at this location?
@@ -88,11 +89,11 @@ class MakeBark extends React.Component{
           //  <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
             //    <Button className="YesButton" variant="contained" onClick={console.log("Clicked yes")}> Yes </Button>
               //  <Button className="NoButton" variant="contained" onClick={console.log("Clicked no")}> No </Button>
-            //</Dialog>
+            //</Dialog>b
           //</div>
         //);
 
         
    // }
 //}
-export default MakeBark;this
+export default MakeBark;

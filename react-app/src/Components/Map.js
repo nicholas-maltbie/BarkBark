@@ -58,7 +58,7 @@ function CenterControl(controlDiv, map) {
       clearInterval(this.updateLocationTaskId)
 }
 
-function BarkControl(controlDiv, map) {
+function BarkControl(controlDiv, map, updateBarkDialog) {
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
   controlUI.className = "BarkControl";
@@ -80,6 +80,7 @@ function BarkControl(controlDiv, map) {
     //UIspace.appendChild(MakeBark);
     //document.appendChild(MakeBark);
     //UIDialog.appendChild(MakeBark);
+    updateBarkDialog(true);
     MakeFireBark()
   });
 
@@ -101,15 +102,20 @@ class Map extends Component {
       icon: this.userIcon,
       map: this.map,
     })
-    //this.dialogstatus={
-    //  open = false,
-    //}
-    
+    this.state ={
+      dialogOpen: false,
+    };
+
     this.userLocation = {lat: 0, lng: 0}
     this.updateLocation = this.updateLocation.bind(this);
     this.updateDogLocation = () => {
       this.userMarker.setPosition(this.userLocation)
     }
+    this.updateBarkDialog = this.updateBarkDialog.bind(this);
+  }
+
+  updateBarkDialog(newState) {
+    this.setState({dialogOpen: newState});
   }
   
   updateLocation(newPos) {
@@ -151,7 +157,7 @@ class Map extends Component {
     
     var barkControlDiv = document.createElement('div');
     barkControlDiv.setAttribute("id", "BarkControl");
-    var barkControl = new BarkControl(barkControlDiv, this.map);
+    var barkControl = new BarkControl(barkControlDiv, this.map, this.updateBarkDialog);
 
     barkControlDiv.index = 1;
     centerControlDiv.index = 1;
@@ -173,7 +179,7 @@ class Map extends Component {
     return(
       
         <div className="Map" id="map">
-          <MakeBark open = {this.state}/>
+          <MakeBark open = {this.state.dialogOpen} updateFn = {this.updateBarkDialog}/>
         </div>
         
         
