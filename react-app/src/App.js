@@ -34,7 +34,7 @@ function SignIn(props) {
         <img src="/static/media/logo.12a6f28b.png" className="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
-        <p>By Signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
+        <p>By signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
       </div>
     )
   }

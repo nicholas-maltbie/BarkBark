@@ -3,4 +3,5 @@ body {							/*font for Please Sign in, and other instructions */
   padding: 0;
   font-family: Futura, "Trebuchet MS", Arial, sans-serif;
   font-size: 18px;
+  background-image: url(mapbg.png)
 }
