@@ -72,10 +72,10 @@ export function verifyAccount(userId, name, email) {
             email: email,
             dog: {
                 name: "Doggy",
-                breed: "Husky",
-                emotion: "Happy",
-                fur: "Grey",
-                eye: "Blue",
+                breed: "BOX",
+                emotion: "BOX_HAP",
+                fur: "BOX_HAP_BROWN",
+                eye: "BOX_HAP_4B5969",
                 color: "Blue"
             }
         })
