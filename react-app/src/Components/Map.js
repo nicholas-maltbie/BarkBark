@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MakeBark from '../Components/MakeBark.js';
 
 
-=======
-import { MakeBark } from './bark.js';
->>>>>>> master
+import { MakeFireBark } from './bark.js';
 
 // Using this api
 // https://developers.google.com/maps/documentation/javascript/tutorial
@@ -83,7 +80,7 @@ function BarkControl(controlDiv, map) {
     //UIspace.appendChild(MakeBark);
     //document.appendChild(MakeBark);
     //UIDialog.appendChild(MakeBark);
-    MakeBark()
+    MakeFireBark()
   });
 
 }
@@ -104,6 +101,9 @@ class Map extends Component {
       icon: this.userIcon,
       map: this.map,
     })
+    //this.dialogstatus={
+    //  open = false,
+    //}
     
     this.userLocation = {lat: 0, lng: 0}
     this.updateLocation = this.updateLocation.bind(this);
@@ -172,7 +172,10 @@ class Map extends Component {
   render() {
     return(
       
-        <div className="Map" id="map"></div>
+        <div className="Map" id="map">
+          <MakeBark open = {this.state}/>
+        </div>
+        
         
         
     );
