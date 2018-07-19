@@ -49,14 +49,18 @@ export function updateUserAvatar(userId, avatar){ //Updates avatar in database, 
     var dbRef = firebase.database().ref();
     dbRef.child('users/' + userId).update({
         dog: {
-            breed: "Husky",
-            color: bgColor,
-            emotion: "Happy",
-            fur: "Grey",
+            breed: avatar.breedValue,
+            color: avatar.backgroundValue,
+            emotion: avatar.emotionValue,
+            fur: avatar.furValue,
             name: "Doggy",
-            eye: "Grey"
+            eye: avatar.eyeValue
         }
     });
+}
+
+export function uploadUserAvatar(blob){
+    //var uploadTask = firebase.storage().ref().child('users/' + this.props.userId).put(blob);
 }
 
 var breeds = ["Boxer", "Chihuahua", "Husky", "Labrador", "Poodle", "Spaniel"];

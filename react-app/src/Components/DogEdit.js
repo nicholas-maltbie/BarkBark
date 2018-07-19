@@ -9,13 +9,13 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import { getDogOptions, getBreeds, getBackgroundColors, getUserInfo, getDogPart } from '../Fire.js';
+import { getDogOptions, getBreeds, getBackgroundColors, getUserInfo, getDogPart, updateUserAvatar, uploadUserAvatar } from '../Fire.js';
 
 class DogEdit extends React.Component {
   constructor(props){
     super(props);
     
-    this.state = {
+    this.state = { //initialLoad variable may be needed for intitial canvas update
       values: {
         backgroundValue: "",
         furValue: "",
@@ -24,13 +24,12 @@ class DogEdit extends React.Component {
         eyeValue: "",
       },
       options: {
-        breedOptions: {},
-        backgroundColorOptions: {},
+        breedOptions: [],
+        backgroundColorOptions: [],
         eyeOptions: {},
         furOptions: {},
         emotionOptions: {},
-      },
-      initialLoad: true
+      }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -54,15 +53,11 @@ class DogEdit extends React.Component {
         eyeOptions: dogOptions.eyes,
         furOptions: dogOptions.fur,
         emotionOptions: dogOptions.emotion,
-      }
+      },
+      userBlob: ""
     });
     updateCanvas();
-    loadOptions();
   };
-
-  componentWillUnmount(){
-    this.setState({initialLoad: false});
-  }
 
   handleChangeBreed(){
     var dogOptions = getDogOptions(this.state.values.breedValue);
@@ -76,38 +71,59 @@ class DogEdit extends React.Component {
   }
 
   updateCanvas() { 
-    if(this.state.initialLoad){
-      var fur = getDogPart(this.state.breedValue, "fur", this.state.values.furValue);
-      var eyes = (this.state.breedValue, "eyes", this.state.values.eyeValue);
-      var emotion = getDogPart(this.state.breedValue, "emotion", this.state.values.emotionValue);
-      var breed = getDogPart(this.state.breedValue, "fur", this.state.values.furValue);
-      this.setState({initialLoad: false});
-    }
     var c=document.getElementsByClassName("dogPreviewAvatarImageStyle");
     var ctx=c.getContext("2d");
-    var imageObj1 = new Image();
-    var imageObj2 = new Image();
-    imageObj1.src = "1.png"
-    imageObj1.onload = function() {
-      ctx.drawImage(imageObj1, 0, 0, 328, 526);
-      imageObj2.src = "2.png";
-      imageObj2.onload = function() {
-          ctx.drawImage(imageObj2, 15, 85, 300, 300);
-          var img = c.toDataURL("image/png");
-          document.write('<img src="' + img + '" width="328" height="526"/>');
-      }
+    var furImage = new Image();
+    var eyesImage = new Image();
+    var emotionImage = new Image();
+    var breedImage = new Image();
+    furImage.src = getDogPart(this.state.breedValue, "fur", this.state.values.furValue);;
+    furImage.onload = function() {
+      ctx.drawImage(furImage, 0, 0, 300, 300); //image, x, y, width, height
+      eyesImage.src = getDogPart(this.state.breedValue, "eyes", this.state.values.eyeValue);;
+      eyesImage.onload = function() {
+          ctx.drawImage(eyesImage, 0, 0, 300, 300);
+          emotionImage.src = getDogPart(this.state.breedValue, "emotion", this.state.values.emotionValue);;
+          emotionImage.onload = function() {
+            ctx.drawImage(emotionImage, 0, 0, 300, 300);
+            breedImage.src = getDogPart(this.state.breedValue, "fur", this.state.values.furValue);
+            breedImage.onload = function() {
+              ctx.drawImage(breedImage, 0, 0, 300, 300);
+              c.toBlob(function(blob){
+                this.setState({userBlob: blob});
+              });
+            };
+          };
+        };
+      };
     };
   }
 
-  loadOptions(options) {
-    options.forEach()
-
+  loadOptions(options) { //Return an array of tabs based on generated options
+    var tabOptions;
+    if(Array.isArray(options)) {
+      tabOptions = options.map((value) => {
+        if(value == "white" || value == "White"){
+          return <Tab label={value} style={{backgroundColor: value, color:'black'}}/>;
+        }
+        return <Tab label={value} style={{backgroundColor: value, color:'white'}}/>;
+      })
+    }
+    else {
+      tabOptions = Object.keys(options).map((value) => {
+        if(options[value] == "white" || options[value] == "White"){
+          return <Tab label={options[value]} style={{backgroundColor: options[value], color:'black'}}/>;
+        }
+        return <Tab label={options[value]} style={{backgroundColor: options[value], color:'white'}}/>;
+      });  
+    }
+    return tabOptions;
   }
   
 
-  handleChange = (event, value, selector) => {
+  handleChange = (event, value, selector) => { //value is returned index of tab option
     if(selector == 'BGColor'){
-      this.setState({ backgroundValue: this.state.options.backgroundOptions[Object.keys(this.state.options.backgroundOptions)[value]] });
+      this.setState({ backgroundValue: this.state.options.backgroundColorOptions[value] });
     }
     else if(selector == 'Fur'){
       this.setState({ furValue: this.state.options.furOptions[Object.keys(this.state.options.furOptions)[value]] });
@@ -115,25 +131,43 @@ class DogEdit extends React.Component {
     else if(selector == 'Emotion'){
       this.setState({ emotionValue: this.state.options.emotionOptions[Object.keys(this.state.options.emotionOptions)[value]] });
     }
+    else if(selector == 'Eyes'){
+      this.setState({ emotionValue: this.state.options.eyeOptions[Object.keys(this.state.options.eyeOptions)[value]] });
+    }
     else if(selector == 'Breed'){
-      this.setState({ breedValue: this.state.options.breedOptions[Object.keys(this.state.options.breedOptions)[value]] });
+      this.setState({ breedValue: this.state.options.breedOptions[value] });
       this.handleChangeBreed();
     }
-    this.updateCanvas
+
+    if(selector != 'BGColor'){
+      this.updateCanvas();
+    }
   };
 
   handleSubmit() {
-    updateUserAvatar(this.props.userId, this.state.values);
+    updateUserAvatar(this.props.userId, this.state.values); //Update avatar attributes with text values
+    uploadUserAvatar(this.state.userBlob); //Upload full avatar image
   }
 
   render() {
     
     return (
       <div className="dogEditWindow">
-        <div className="dogPreviewStyle" style={{backgroundColor: this.state.backgroundValue}}>
+        <div className="dogPreviewStyle" style={{backgroundColor: this.state.values.backgroundValue}}>
           <canvas className="dogPreviewAvatarImageStyle"/>
         </div>
         <div className="valueDogSelectorStyle">
+          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
+              <Typography> Breed </Typography>
+              <Tabs
+                value={this.state.breedValue}
+                onChange={(event, value) => this.handleChange(event, value, 'Breed')}
+                scrollable
+                scrollButtons="auto"
+              >
+                {this.loadOptions(this.state.options.breedOptions)}
+              </Tabs>
+            </AppBar>
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
             <Typography> Background Color </Typography>
             <Tabs
@@ -142,11 +176,7 @@ class DogEdit extends React.Component {
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Blue" style={{backgroundColor:'blue', color:'white'}}/>
-              <Tab label="Green" style={{backgroundColor:'Green', color:'white'}}/>
-              <Tab label="Yellow" style={{backgroundColor:'Yellow', color:'white'}}/>
-              <Tab label="Orange" style={{backgroundColor:'Orange', color:'white'}}/>
-              <Tab label="Violet" style={{backgroundColor:'Violet', color:'white'}}/>
+              {this.loadOptions(this.state.options.backgroundColorOptions)}
             </Tabs>
           </AppBar>
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
@@ -157,9 +187,7 @@ class DogEdit extends React.Component {
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Gray" style={{backgroundColor:'Gray', color:'white'}}/>
-              <Tab label="Black" style={{backgroundColor:'Black', color:'white'}}/>
-              <Tab label="Tan" style={{backgroundColor:'Tan', color:'white'}}/>
+              {this.loadOptions(this.state.options.furOptions)}
             </Tabs>
           </AppBar>
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
@@ -170,24 +198,18 @@ class DogEdit extends React.Component {
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Happy" style={{backgroundColor:'Orange', color:'white'}}/>
-              <Tab label="Sad" style={{backgroundColor:'Gray', color:'white'}}/>
+              {this.loadOptions(this.state.options.emotionOptions)}
             </Tabs>
           </AppBar>
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-            <Typography> Breed </Typography>
+            <Typography> Emotion </Typography>
             <Tabs
-              value={this.state.breedValue}
-              onChange={(event, value) => this.handleChange(event, value, 'Breed')}
+              value={this.state.eyeColorValue}
+              onChange={(event, value) => this.handleChange(event, value, 'Eyes')}
               scrollable
               scrollButtons="auto"
             >
-              <Tab label="Boxer"/>
-              <Tab label="Chihuahua" />
-              <Tab label="Husky" />
-              <Tab label="Labrador" />
-              <Tab label="Poodle" />
-              <Tab label="Spaniel" />
+              {this.loadOptions(this.state.options.eyeOptions)}
             </Tabs>
           </AppBar>
           <Button className="dogEditSubmit" variant="contained" onClick={this.handleSubmit}> Submit </Button>

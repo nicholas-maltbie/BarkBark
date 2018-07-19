@@ -75,7 +75,7 @@ class ProfilePage extends React.Component {
                 </Card>
                 <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
                     <DialogTitle>Edit Dog Avatar</DialogTitle>
-                    <DogEdit/>
+                    <DogEdit userId={this.props.userId}/>
                 </Dialog>
                 <ExpansionPanel expanded={this.state.expanded == "UserPanel"} onChange={(e) => this.handleExpansion(e, "UserPanel")}
                 className="ProfileExpansionTab">
