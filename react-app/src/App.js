@@ -24,7 +24,7 @@ function SignIn(props) {
   uiConfig.callbacks.signInSuccessWithAuthResult = props.callBackFunc;
   // For iOS full screen apps we use the redirect auth mode.
   if (('standalone' in window.navigator)
-      && window.navigator.standalone){
+      && !window.navigator.standalone){
     uiConfig.signInFlow = 'redirect';
   }
   
