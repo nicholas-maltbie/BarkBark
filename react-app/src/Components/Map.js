@@ -58,7 +58,7 @@ function CenterControl(controlDiv, map) {
       clearInterval(this.updateLocationTaskId)
 }
 
-function BarkControl(controlDiv, map, updateBarkDialog) {
+function BarkControl(controlDiv, map, updateBarkDialog, getLocationFn) {
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
   controlUI.className = "BarkControl";
@@ -81,7 +81,7 @@ function BarkControl(controlDiv, map, updateBarkDialog) {
     //document.appendChild(MakeBark);
     //UIDialog.appendChild(MakeBark);
     updateBarkDialog(true);
-    MakeFireBark()
+    MakeFireBark(getLocationFn())
   });
 
 }
@@ -157,7 +157,10 @@ class Map extends Component {
     
     var barkControlDiv = document.createElement('div');
     barkControlDiv.setAttribute("id", "BarkControl");
-    var barkControl = new BarkControl(barkControlDiv, this.map, this.updateBarkDialog);
+    var barkControl = new BarkControl(barkControlDiv, 
+      this.map, 
+      this.updateBarkDialog, 
+      () => {return this.userLocation});
 
     barkControlDiv.index = 1;
     centerControlDiv.index = 1;
