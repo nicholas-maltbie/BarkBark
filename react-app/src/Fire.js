@@ -30,136 +30,16 @@ export const uiConfig = {
   ]
 };
 
-function getUser(userId){ //Get snapshot of user in database
-    var dbRef = firebase.database().ref('/users/' + userId).once("value")
+export async function getUserInfo(userId){ //Get function for user snapshot
+    var userInfo = firebase.database().ref('/users/' + userId).once("value")
     .then(function (snapshot) {
         if (snapshot.val() != null) {
             return snapshot.val();
         }
     });
-    return dbRef;
+    return await userInfo;
 }
 
-export async function getUserInfo(userId){ //Get function for user snapshot
-    var userInfo = await getUser(userId);
-    return userInfo;
-}
-
-export function updateUserAvatar(userId, avatar){ //Updates avatar in database, avatar passed in is an object
-    var dbRef = firebase.database().ref();
-    dbRef.child('users/' + userId).update({
-        dog: {
-            breed: avatar.breedValue,
-            color: avatar.backgroundValue,
-            emotion: avatar.emotionValue,
-            fur: avatar.furValue,
-            name: "Doggy",
-            eye: avatar.eyeValue
-        }
-    });
-}
-
-export function uploadUserAvatar(blob){
-    //var uploadTask = firebase.storage().ref().child('users/' + this.props.userId).put(blob);
-}
-
-var breeds = ["Boxer", "Chihuahua", "Husky", "Labrador", "Poodle", "Spaniel"];
-var backgroundColors = ["Blue", "Green", "Yellow", "Orange", "Violet"];
-var dataTree = {
-    "Boxer": {
-        "eyes": {
-            'black': "storageName"
-        },
-        "fur": {
-            'white': "storageName"
-        },
-        "emotion": {
-            'happy': "storageName",
-            'sad': "storageName"
-        },
-    },
-    "Chihuahua": {
-        "eyes": {
-            'black': "storageName"
-        },
-        "fur": {
-            'white': "storageName"
-        },
-        "emotion": {
-            'happy': "storageName",
-            'sad': "storageName"
-        },
-    },
-    "Husky": {
-        "eyes": {
-            'black': "storageName"
-        },
-        "fur": {
-            'white': "storageName"
-        },
-        "emotion": {
-            'happy': "storageName",
-            'sad': "storageName"
-        },
-    },
-    "Labrador": {
-        "eyes": {
-            'black': "storageName"
-        },
-        "fur": {
-            'white': "storageName"
-        },
-        "emotion": {
-            'happy': "storageName",
-            'sad': "storageName"
-        },
-    },
-    "Poodle": {
-        "eyes": {
-            'black': "storageName"
-        },
-        "fur": {
-            'white': "storageName"
-        },
-        "emotion": {
-            'happy': "storageName",
-            'sad': "storageName"
-        },
-    },
-    "Spaniel": {
-        "eyes": {
-            'black': "storageName"
-        },
-        "fur": {
-            'out': {
-                'white': "storageName"
-            },
-            'in': {
-                'white': "storageName"
-            }
-        },
-        "emotion": {
-            'happy': "storageName",
-            'sad': "storageName"
-        },
-    },
-}
-
-export function getBreeds() {
-    return breeds;
-}
-export function getBackgroundColors() {
-    return backgroundColors;
-}
-export function getDogOptions(breed){
-    return dataTree[breed];
-}
-export async function getDogPart(breed, part, value){
-    var storageName = dataTree[breed][part][value];
-    var storage = firebase.storage().ref().child('Dog');
-    var dogPart = await storage.child(storageName).getDownloadURL();
-    return dogPart;
-}
 
 export function verifyAccount(userId, name, email) {
   var ref = firebase.database().ref()
@@ -182,6 +62,5 @@ export function verifyAccount(userId, name, email) {
         })
     }
   })
-  
   return;
 }

@@ -17,7 +17,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import ContentCreate from 'material-ui/svg-icons/content/create.js';
 import DogEdit from '../Components/DogEdit.js';
-import { getUserInfo, updateUserAvatar } from '../Fire.js';
+import { getUserInfo } from '../Fire.js';
 
 class ProfilePage extends React.Component {
     constructor(props){
@@ -48,8 +48,8 @@ class ProfilePage extends React.Component {
             dialogToggle: !this.state.dialogToggle
         });
     }
-    async displayUserInfo(userId){
-        var userInfo = await getUserInfo(userId);
+    displayUserInfo(userId){
+        var userInfo = getUserInfo(userId);
         this.setState({ 
             user: {
                 userName: userInfo.username,
@@ -69,50 +69,14 @@ class ProfilePage extends React.Component {
                     </CardContent>
                     <CardContent>
                         <Typography variant="headline" component="h2">
-                            {this.state.user.userName}
+                            UserName {this.state.user.userName}
                         </Typography>
                     </CardContent>
                 </Card>
                 <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
                     <DialogTitle>Edit Dog Avatar</DialogTitle>
                     <DogEdit userId={this.props.userId}/>
-                </Dialog>
-                <ExpansionPanel expanded={this.state.expanded == "UserPanel"} onChange={(e) => this.handleExpansion(e, "UserPanel")}
-                className="ProfileExpansionTab">
-                    <ExpansionPanelSummary>
-                        <Typography> User Settings </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <List> 
-                            <ListItem>
-                                <ListItemText primary="Display Name" />
-                                <ListItemSecondaryAction>
-                                <Switch
-                                    
-                                />
-                                </ListItemSecondaryAction> 
-                            </ListItem>
-                        </List> 
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel expanded={this.state.expanded === "AdvancedPanel"} onChange={(e) => this.handleExpansion(e, "AdvancedPanel")}
-                className="ProfileExpansionTab">
-                    <ExpansionPanelSummary>
-                        <Typography> Advanced Settings </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <List> 
-                            <ListItem>
-                                <ListItemText primary="Display Name" />
-                                <ListItemSecondaryAction>
-                                <Switch
-                                    
-                                />
-                                </ListItemSecondaryAction> 
-                            </ListItem>
-                        </List> 
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>         
+                </Dialog> 
             </div>
         )
     }
