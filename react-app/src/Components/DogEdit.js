@@ -216,12 +216,13 @@ class DogEdit extends React.Component {
   }
 
   updateCanvas() { 
-    var c=document.getElementsByClassName("dogPreviewAvatarImageStyle");
+    var c=document.getElementById("dogEditCanvas");
     var ctx=c.getContext("2d");
     var furImage = new Image();
     var eyesImage = new Image();
     var emotionImage = new Image();
-    emotionImage.src = FIREBASE_DATA_PATH + this.state.values.emotionValue.file;
+    emotionImage.src = "gs://barkbark-9155d.appspot.com/Dog/Boxer/Boxer_Happy.png"
+    //emotionImage.src = FIREBASE_DATA_PATH + this.state.values.emotionValue.file;
     emotionImage.onload = function() {
       ctx.drawImage(emotionImage, 0, 0, 300, 300); //image, x, y, width, height
       eyesImage.src = FIREBASE_DATA_PATH + this.state.values.eyeValue.file;
@@ -240,12 +241,12 @@ class DogEdit extends React.Component {
 
   loadOptions(options, type) { //Return an array of tabs based on generated options
     var tabOptions;
-    tabOptions = options.map((value) => {
+    tabOptions = options.map((value, index) => {
       if(type == "bg"){
-        return <Tab label={value['color']} style={{backgroundColor: value['hex'], color:'black'}}/>;
+        return <Tab key={index} label={value['color']} style={{backgroundColor: value['hex'], color:'black'}}/>;
       }
       else {
-        return <Tab label={value['id']} style={{backgroundColor: "white", color:'black'}}/>;
+        return <Tab key={index} label={value['id']} style={{backgroundColor: "white", color:'black'}}/>;
       }
     });
     return tabOptions;
@@ -286,7 +287,7 @@ class DogEdit extends React.Component {
     return (
       <div className="dogEditWindow">
         <div className="dogPreviewStyle" style={{backgroundColor: this.state.values.backgroundValue}}>
-          <canvas className="dogPreviewAvatarImageStyle"/>
+          <canvas className="dogPreviewAvatarImageStyle" id="dogEditCanvas"/>
         </div>
         <div className="valueDogSelectorStyle">
           <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
