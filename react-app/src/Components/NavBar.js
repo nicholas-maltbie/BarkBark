@@ -12,18 +12,31 @@ const NavBarStyle = {
     display: 'flex',
     flexDirection: 'row',
     alignItems:'center',
-    backgroundColor: 'rgb(51, 204, 204)',
+    backgroundColor: 'rgb(0,0,0)',
     width:'100%',
     height:'10vh'
 };
+
+const navButtonColor = 'white'
+
+const TitleColor = { 
+	color : '#CACACA'
+};
+
+const TitleColor2 = { 
+	color : '#00b3ff'
+};
+
 const NavBarHeaderStyle = {
     width:'90%',
     textAlign: 'center',
-    fontSize:'24px',
-    fontFamily: 'Gaegu'
+    fontSize:'30px',
+    fontFamily: 'Futura, "Trebuchet MS", Arial, sans-serif',
+	fontWeight: '525'
 };
 const NavBarButtonStyle = {
-    width:'5%'
+    width:'5%',
+    fill:'white'
 };
 
 class NavBar extends React.Component {
@@ -35,6 +48,7 @@ class NavBar extends React.Component {
 
     this.handleLink = this.handleLink.bind(this);
     this.signOut = this.signOut.bind(this);
+    this.toggleDrawer = this.toggleDrawer.bind(this);
   }
 
   handleToggle = () => this.setState({open: !this.state.open});
@@ -53,6 +67,13 @@ class NavBar extends React.Component {
     e.preventDefault();
     this.props.history.push('/');
   }
+  
+  toggleDrawer(otherFn) {
+    return (e) => {
+      this.props.handleDrawerToggle()
+      otherFn(e)
+    }
+  }
 
   render() {
     if (this.props.isSignedIn) {
@@ -61,25 +82,29 @@ class NavBar extends React.Component {
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon={<Menu/>}/>
+          icon= {<Menu color={navButtonColor}/>}/>
         <div className="Header" 
           style={NavBarHeaderStyle}>
-          Bark Bark
+          <span style = {TitleColor}> Bark </span>
+		  <span style = {TitleColor2}>Bark </span>
         </div>
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon={<Person/>}/>
+			
+          icon={ <Person color={navButtonColor}/>}/>
+		  <div backgroundColor = "#000">
         <Drawer open={!this.props.drawerClose}>
-          <MenuItem onClick={this.signOut}>Sign Out</MenuItem>
-          <MenuItem onClick={this.handleLink}>Home</MenuItem>
-          <MenuItem onClick={this.handleLink}>Map</MenuItem>
-          <MenuItem onClick={this.handleLink}>Profile</MenuItem>
-          <MenuItem onClick={this.handleLink}>Help</MenuItem>
-          <MenuItem onClick={this.handleLink}>About Us</MenuItem>
-          <MenuItem onClick={this.handleLink}>Terms Of Use</MenuItem>
-          <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.signOut)}>Sign Out</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Home</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Map</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Profile</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Help</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>About Us</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Terms Of Use</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Contact Us</MenuItem>
         </Drawer>
+		</div>
       </div>
       )
     }
@@ -89,19 +114,20 @@ class NavBar extends React.Component {
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-          icon={<Menu/>}/>
+          icon={<Menu color={navButtonColor}/>}/>
         <div className="Header" 
           style={NavBarHeaderStyle}>
-          Bark Bark
+          <span style = {TitleColor}> Bark </span>
+		  <span style = {TitleColor2}>Bark </span>
         </div>
         <FlatButton 
           style={NavBarButtonStyle}/>
         <Drawer open={!this.props.drawerClose}>
-          <MenuItem onClick={this.handleLink}>Sign In</MenuItem>
-          <MenuItem onClick={this.handleLink}>Help</MenuItem>
-          <MenuItem onClick={this.handleLink}>Contact Us</MenuItem>
-          <MenuItem onClick={this.handleLink}>Terms Of Use</MenuItem>
-          <MenuItem onClick={this.handleLink}>About Us</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Sign In</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Help</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Contact Us</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Terms Of Use</MenuItem>
+          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>About Us</MenuItem>
         </Drawer>
       </div>
       )

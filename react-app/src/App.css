@@ -5,14 +5,45 @@
   min-height:100vh;
 }
 
-.CenterControl {
-  background-color: #fff;
-  border: 2px solid #fff;
-  border-radius: 3px;
+.BarkControl {			/* Bark Button - needs to be moved to bottom right */
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  font-family:sans-serif; 
+  font-size: 28px;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #00b3ff;
+  border: 2px solid #0000;
+  border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0,0,0,.3);
   cursor: pointer;
   text-align: center;
   margin: 10px;
+  margin-left: 0;
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+.CenterControl {			/* crosshair button*/
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  cursor: pointer;
+  text-align: center;
+  margin: 10px;
+  margin-left: 0;
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 .Map {
@@ -23,7 +54,7 @@
 .App-logo {
   animation: swing 3s infinite ease-in-out;
   padding: 10px;
-  height: 80px;
+  height: 120px;
 }
 
 .App-header {
@@ -45,6 +76,7 @@
   height:90%;
   margin:20px;
   text-align: left;
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
 .dogEditWindow {
   display:flex;
@@ -82,6 +114,7 @@
   justify-content: center;
   flex-direction: column;
   margin-top: 5%;
+  
 }
 .ProfileHeaderStyle {
   width: 80%;
@@ -91,7 +124,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
 .ProfileExpansionTab {
   width: 80%;
@@ -125,7 +158,7 @@
 
 #ContactPageScreenStyle{
 	height: 100%;
-    width:50%;
+    width:100%;
     display: flex;
     flex-Direction:column;
     align-Items:center;
@@ -142,7 +175,7 @@
   animation: swing 3s infinite ease-in-out;
   padding: 5px;
   height: 100px;
-  margin-bottom: 5px;
+  margin-bottom:5px;
 }
 .Contact-Button {
 	padding: 15px;

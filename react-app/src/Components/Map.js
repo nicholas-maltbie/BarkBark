@@ -1,28 +1,40 @@
 import React, { Component } from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import MakeBark from '../Components/MakeBark.js';
+
+
+import { MakeFireBark } from './bark.js';
 
 // Using this api
 // https://developers.google.com/maps/documentation/javascript/tutorial
 
 const google = window.google;
 
+export var rejected = false;
+
 export const getLocation = () => {
   const geolocation = navigator.geolocation;
 
-  const location = new Promise((resolve, reject) => {
-    if (!geolocation) {
-      reject(new Error('Not Supported'));
-    }
-
-  geolocation.getCurrentPosition((position) => {
-    resolve(position);
-  }, () => {
-    reject (
-      alert("This app requires permission to share your location, https://support.google.com/chrome/answer/142065?hl=en")
-    );
-  });
-  });
-
-  return location
+  
+  if (!rejected) {
+    const location = new Promise((resolve, reject) => {
+      if (!geolocation) {
+        reject(new Error('Not Supported'));
+        rejected = true
+      }
+        geolocation.getCurrentPosition((position) => {
+          resolve(position);
+        }, () => {
+          reject (
+            alert("This app requires permission to share your location, https://support.google.com/chrome/answer/142065?hl=en")
+          );
+          rejected = true
+        });
+    })
+    return location
+  }
+  return new Promise(() => { return {"coords" : {"longitude":0, "latitude":0} } })
 };
 
 function CenterControl(controlDiv, map) {
@@ -43,6 +55,34 @@ function CenterControl(controlDiv, map) {
                                                   lng: newPos.coords.longitude})
     );
   });
+      clearInterval(this.updateLocationTaskId)
+}
+
+function BarkControl(controlDiv, map, updateBarkDialog, getLocationFn) {
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.className = "BarkControl";
+  controlUI.title = 'Make a bark';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.innerHTML = 'Bark!';
+  controlUI.appendChild(controlText);
+
+  // Setup the click event listeners: simply set the map to Chicago.
+  controlUI.addEventListener('click', function() {
+    //var uitest = new MakeBark;
+    //uitest.handleClickOpen();
+    //MakeBark.handleClickOpen;
+    //var UIspace = document.createElement('MakeBark');
+    //var UIDialog = new MakeBark;
+    //UIspace.appendChild(MakeBark);
+    //document.appendChild(MakeBark);
+    //UIDialog.appendChild(MakeBark);
+    updateBarkDialog(true);
+    MakeFireBark(getLocationFn())
+  });
 
 }
 
@@ -62,12 +102,20 @@ class Map extends Component {
       icon: this.userIcon,
       map: this.map,
     })
-    
+    this.state ={
+      dialogOpen: false,
+    };
+
     this.userLocation = {lat: 0, lng: 0}
     this.updateLocation = this.updateLocation.bind(this);
     this.updateDogLocation = () => {
       this.userMarker.setPosition(this.userLocation)
     }
+    this.updateBarkDialog = this.updateBarkDialog.bind(this);
+  }
+
+  updateBarkDialog(newState) {
+    this.setState({dialogOpen: newState});
   }
   
   updateLocation(newPos) {
@@ -78,12 +126,18 @@ class Map extends Component {
   
   componentWillUnmount() {
     var centerElem = document.getElementById("CenterControl")
+    var barkElem = document.getElementById("BarkControl")
     
     if (centerElem != null) {
       centerElem.parentNode.removeChild(centerElem)
     }
+    if (barkElem != null) {
+      barkElem.parentNode.removeChild(barkElem)
+    }
     
-    clearInterval(this.updateLocationTaskId)
+    if (this.updateLocationTaskId != null) {
+      clearInterval(this.updateLocationTaskId)
+    }
   }
   
   componentDidMount () {
@@ -100,8 +154,17 @@ class Map extends Component {
     var centerControlDiv = document.createElement('div');
     centerControlDiv.setAttribute("id", "CenterControl");
     var centerControl = new CenterControl(centerControlDiv, this.map);
+    
+    var barkControlDiv = document.createElement('div');
+    barkControlDiv.setAttribute("id", "BarkControl");
+    var barkControl = new BarkControl(barkControlDiv, 
+      this.map, 
+      this.updateBarkDialog, 
+      () => {return this.userLocation});
 
+    barkControlDiv.index = 1;
     centerControlDiv.index = 1;
+    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(barkControlDiv);
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
@@ -117,9 +180,15 @@ class Map extends Component {
   
   render() {
     return(
-      <div className="Map" id="map"></div>
+      
+        <div className="Map" id="map">
+          <MakeBark open = {this.state.dialogOpen} updateFn = {this.updateBarkDialog}/>
+        </div>
+        
+        
+        
     );
    }
 };
 
-export default Map;
+export default Map;this

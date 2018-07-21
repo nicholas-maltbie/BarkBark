@@ -17,7 +17,6 @@ firebase.initializeApp(config);
 // Configure FirebaseUI.
 export const uiConfig = {
   callbacks: {},
-  // Popup signin flow rather than redirect flow.
   signInFlow: 'popup',
   // Redirect to /Home after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
   signInSuccessUrl: '/',
@@ -54,9 +53,10 @@ export function verifyAccount(userId, name, email) {
             email: email,
             dog: {
                 name: "Doggy",
-                breed: "Husky",
-                emotion: "Happy",
-                fur: "Grey",
+                breed: "BOX",
+                emotion: "BOX_HAP",
+                fur: "BOX_HAP_BROWN",
+                eye: "BOX_HAP_4B5969",
                 color: "Blue"
             }
         })

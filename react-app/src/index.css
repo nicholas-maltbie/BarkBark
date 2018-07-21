@@ -1,5 +1,7 @@
-body {
+body {							/*font for Please Sign in, and other instructions */
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+  font-size: 18px;
+  background-image: url(mapbg.png)
 }

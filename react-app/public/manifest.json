@@ -1,5 +1,5 @@
 {
-  "short_name": "Bark",
+  "short_name": "Bark Bark",
   "name": "Bark Bark",
   "icons": [
     {
@@ -11,5 +11,6 @@
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#32a5e1"
+  "background_color": "#32a5e1",
+  "orientation": "portrait-primary"
 }

@@ -22,14 +22,19 @@ import my404Component     from './Components/404.js';
 function SignIn(props) {
 
   uiConfig.callbacks.signInSuccessWithAuthResult = props.callBackFunc;
-
+  // For iOS full screen apps we use the redirect auth mode.
+  if (('standalone' in window.navigator)
+      && !window.navigator.standalone){
+    uiConfig.signInFlow = 'redirect';
+  }
+  
   if (!props.isSignedIn) {
     return (
       <div>
         <img src="/static/media/logo.12a6f28b.png" className="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
-        <p>By Signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
+        <p>By signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
       </div>
     )
   }
@@ -83,14 +88,22 @@ class App extends Component {
   
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
-        this.setState({
-          isSignedIn: !!user,
-          userId: user.uid,
-          userName: user.displayName,
-          userEmail: user.email
-        })
         if (user != null) {
           verifyAccount(user.uid, user.displayName, user.email);
+          this.setState({
+            isSignedIn: true,
+            userId: user.uid,
+            userName: user.displayName,
+            userEmail: user.email
+          })
+        }
+        else {
+          this.setState({
+            isSignedIn: false,
+            userId: "",
+            userName: "",
+            userEmail: ""
+          })
         }
       }
     );
