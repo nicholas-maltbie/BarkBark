@@ -85,7 +85,7 @@ class DogEdit extends React.Component {
         backgroundValue: {color: "white", hex: "#FFFFFF"},
         furValue: {id: "", name: "", file: ""},
         emotionValue: {id: "", name: "", file: ""},
-        breedValue: {id: "", name: "", file: ""},
+        breedValue: {id: "", name: ""},
         eyeValue: {id: "", name: "", file: ""},
       },
       options: { //Options are an array of objects that hold in { id: name } format
@@ -164,6 +164,7 @@ class DogEdit extends React.Component {
         furOptions: fOptions
       }
     });
+    this.updateCanvas();
   };
 
   updateBreed(){ //Change resulting emotion, eyes, fur based on breed
