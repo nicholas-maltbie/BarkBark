@@ -5,20 +5,19 @@ export function GetRegion(loc) {
   return Math.floor(loc.lat * 10) + "," + Math.floor(loc.lng * 10)
 }
 
-export function MakeFireBark(loc) {
+export function MakeFireBark(locFn) {
+  var loc = locFn()
   var barkRef = firebase.database().ref().child('barks').push()
   
   var id = firebase.auth().currentUser.uid
   var reg = GetRegion(loc)
   
-  
-  var time = firebase.database.ServerValue.TIMESTAMP
-  firebase.database().ref('last_bark/' + id).set(time)
+  firebase.database().ref('last_bark/' + id).set(firebase.database.ServerValue.TIMESTAMP)
   .then( result => {
     var bark = {
       region_id: reg,
       owner: id,
-      timestamp: time,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
       lat: loc.lat,
       lng: loc.lng,
       point_of_interest: ""

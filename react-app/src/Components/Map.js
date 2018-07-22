@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import firebase from 'firebase'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MakeBark from '../Components/MakeBark.js';
 
-
+import { CenterControl, TestButton, BarkControl } from "./Controls.js"
+import { getUserDogProfileURL } from './User.js';
 import { MakeFireBark } from './bark.js';
 
 // Using this api
@@ -11,7 +13,7 @@ import { MakeFireBark } from './bark.js';
 
 const google = window.google;
 
-export var rejected = false;
+export var rejected = false
 
 export const getLocation = () => {
   const geolocation = navigator.geolocation;
@@ -37,62 +39,12 @@ export const getLocation = () => {
   return new Promise(() => { return {"coords" : {"longitude":0, "latitude":0} } })
 };
 
-function CenterControl(controlDiv, map) {
-  // Set CSS for the control border.
-  var controlUI = document.createElement('div');
-  controlUI.className = "CenterControl";
-  controlUI.title = 'Click to recenter the map';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior.
-  var controlText = document.createElement('div');
-  controlText.innerHTML = '<img src="https://cdn4.iconfinder.com/data/icons/social-communication/142/target-512.png" width=48px height=48px/>';
-  controlUI.appendChild(controlText);
-
-  // Setup the click event listeners: simply set the map to Chicago.
-  controlUI.addEventListener('click', function() {
-    getLocation().then((newPos) => map.setCenter({lat: newPos.coords.latitude, 
-                                                  lng: newPos.coords.longitude})
-    );
-  });
-      clearInterval(this.updateLocationTaskId)
-}
-
-function BarkControl(controlDiv, map, updateBarkDialog, getLocationFn) {
-  // Set CSS for the control border.
-  var controlUI = document.createElement('div');
-  controlUI.className = "BarkControl";
-  controlUI.title = 'Make a bark';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior.
-  var controlText = document.createElement('div');
-  controlText.innerHTML = 'Bark!';
-  controlUI.appendChild(controlText);
-
-  // Setup the click event listeners: simply set the map to Chicago.
-  controlUI.addEventListener('click', function() {
-    //var uitest = new MakeBark;
-    //uitest.handleClickOpen();
-    //MakeBark.handleClickOpen;
-    //var UIspace = document.createElement('MakeBark');
-    //var UIDialog = new MakeBark;
-    //UIspace.appendChild(MakeBark);
-    //document.appendChild(MakeBark);
-    //UIDialog.appendChild(MakeBark);
-    updateBarkDialog(true);
-    MakeFireBark(getLocationFn())
-  });
-
-}
-
 class Map extends Component {
   
   constructor(props) {
     super(props);
     
     this.userIcon = {
-      url: 'https://firebasestorage.googleapis.com/v0/b/barkbark-9155d.appspot.com/o/Dog%2FBoxer_Full.png?alt=media&token=e9ac48bb-b112-4919-b082-629ad6e0fbc2',
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(16, 16),
       scaledSize: new google.maps.Size(48, 48)
@@ -112,6 +64,18 @@ class Map extends Component {
       this.userMarker.setPosition(this.userLocation)
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
+    this.getCurrntLocation = this.getCurrntLocation.bind(this);
+    
+    getUserDogProfileURL(firebase.auth().currentUser.uid).then(
+      (imageURL) => {
+        this.userIcon.url = imageURL
+        this.userMarker.setIcon(this.userIcon)
+      }
+    )
+  }
+  
+  getCurrntLocation() {
+    return this.userLocation
   }
 
   updateBarkDialog(newState) {
@@ -119,6 +83,10 @@ class Map extends Component {
   }
   
   updateLocation(newPos) {
+    if (rejected) {
+      clearInterval(this.updateLocationTaskId)
+      this.updateLocationTaskId = null
+    }
     this.userLocation = {lat: newPos.coords.latitude, lng: newPos.coords.longitude}
     this.map.setCenter(this.userLocation)
     this.updateDogLocation()
@@ -127,7 +95,11 @@ class Map extends Component {
   componentWillUnmount() {
     var centerElem = document.getElementById("CenterControl")
     var barkElem = document.getElementById("BarkControl")
+    var testControl = document.getElementById("TestControl")
     
+    if (testControl != null) {
+      testControl.parentNode.removeChild(testControl)
+    }
     if (centerElem != null) {
       centerElem.parentNode.removeChild(centerElem)
     }
@@ -153,18 +125,28 @@ class Map extends Component {
     
     var centerControlDiv = document.createElement('div');
     centerControlDiv.setAttribute("id", "CenterControl");
-    var centerControl = new CenterControl(centerControlDiv, this.map);
+    var centerControl = new CenterControl(centerControlDiv, this.map, getLocation);
+    
+    var testControlDiv = document.createElement('div');
+    testControlDiv.setAttribute("id", "TestButton");
+    var testControl = new TestButton(testControlDiv, this.map, 
+      () => {
+        // Put your code here for testing features
+        console.log('test_feature')
+      }
+    )
     
     var barkControlDiv = document.createElement('div');
     barkControlDiv.setAttribute("id", "BarkControl");
     var barkControl = new BarkControl(barkControlDiv, 
       this.map, 
-      this.updateBarkDialog, 
-      () => {return this.userLocation});
+      this.updateBarkDialog);
 
     barkControlDiv.index = 1;
     centerControlDiv.index = 1;
+    testControlDiv.index = 1
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(barkControlDiv);
+    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(testControlDiv);
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
@@ -182,7 +164,10 @@ class Map extends Component {
     return(
       
         <div className="Map" id="map">
-          <MakeBark open = {this.state.dialogOpen} updateFn = {this.updateBarkDialog}/>
+          <MakeBark open = {this.state.dialogOpen} 
+                    updateFn = {this.updateBarkDialog}
+                    onYes = {() => {MakeFireBark(this.getCurrntLocation)}} 
+                    onNo = {() => {}}/>
         </div>
         
         
