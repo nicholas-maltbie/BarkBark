@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["localhost:3000", "bark.fyi"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]
