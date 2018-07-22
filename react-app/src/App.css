@@ -78,27 +78,36 @@
   text-align: left;
   font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
+.dogEditDialog {
+  background: linear-gradient(#e8e7e7, #dcdfff);
+}
 .dogEditWindow {
   display:flex;
   flex-direction:column;
   align-items:center;
-  width:410px;
-  height:600px;
+  width:100%;
+  height:100%;
 }
-.dogPreviewStyle {
-  width:300px;
-  height:300px;
+.dogPreview {
+  width:100%;
+  height:512px;
 }
-.valueDogSelectorStyle {
+.dogOptionsSelect {
   display: flex;
   flex-direction: column;
-  align-items:center;
-  width:400px;
-  height:300px;
+  width:100%;
+  height:100%;
   padding: 5px;
+  border-radius: 5%;
 }
-.dogEditSubmit {
-  width: 200px;
+.dogEditButton {
+  width:20%;
+}
+#dogEditSubmit {
+  background-color: lightgreen;
+}
+#dogEditCancel {
+  background-color: rgb(255, 86, 86);
 }
 .valueDogSelectorBarStyle {
   padding-top: 5px;
@@ -111,13 +120,16 @@
 #ProfilePageScreenStyle {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
   margin-top: 5%;
   
 }
 .ProfileHeaderStyle {
   width: 80%;
-  height: 100%;
+  height: 50%;
+  position: absolute;
+  top: 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,7 +142,7 @@
 .ProfileHeaderAvatarStyle {
   width:160px;
   height:160px;
-  border-radius:100%;
+  border-radius:50%;
   background-color:lightgray;
 }
 .ProfileHeaderAvatarImage {

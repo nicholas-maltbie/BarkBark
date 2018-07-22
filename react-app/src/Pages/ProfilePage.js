@@ -14,10 +14,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import Dialog from '@material-ui/core/Dialog';
 import ContentCreate from 'material-ui/svg-icons/content/create.js';
 import DogEdit from '../Components/DogEdit.js';
-import { getUserAvatar, updateUserAvatar } from '../Fire.js';
+import { getUserInfo } from '../Fire.js';
 
 class ProfilePage extends React.Component {
     constructor(props){
@@ -26,51 +28,37 @@ class ProfilePage extends React.Component {
         this.state = {
             expanded: null,
             dialogToggle: false,
-            userAvatarUrl: "",
-            userBG: "",
-            userBreed: "",
-            userEmotion: "",
-            userFur: ""
+            user: {
+                userName: "",
+                userAvatar: "",  
+            }
         }
         this.toggleDialog = this.toggleDialog.bind(this);
-        this.avatarChange = this.avatarChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.dogEditChild = React.createRef();
     }
 
     componentDidMount() {
         this.displayUserInfo(this.props.userId);
-    }
-
-    handleExpansion(event, panel){
-        this.setState({
-            expanded: (this.state.expanded == panel) ? null : panel
-        });
     }
     toggleDialog(){
         this.setState({
             dialogToggle: !this.state.dialogToggle
         });
     }
-    async displayUserInfo(userId){
-        var userInfo = await getUserAvatar(userId);
+    displayUserInfo(userId){
+        var userInfo = getUserInfo(userId);
         this.setState({ 
-            userName: userInfo.data.username,
-            userAvatarUrl: userInfo.default, 
-            userBG: userInfo.data.dog.color,
-            userBreed: userInfo.data.dog.breed,
-            userEmotion: userInfo.data.dog.emotion,
-            userFur: userInfo.data.dog.fur,
+            user: {
+                userName: userInfo.username,
+                userAvatar: "", 
+            }
         });
+    }
+    handleSubmit() {
+        this.dogEditChild.current.handleSubmit();
     }
 
-    avatarChange(bg, breed, emotion, fur) {
-        this.setState({ 
-            userBG: bg,
-            userBreed: breed,
-            userEmotion: emotion,
-            userFur: fur,
-        });
-        updateUserAvatar(this.props.userId, bg, breed, emotion, fur);
-    }
     render(){
         return(
             <div className="Page" id="ProfilePageScreenStyle">
@@ -79,57 +67,28 @@ class ProfilePage extends React.Component {
                         <Button  className="ProfileEditAvatarButton" variant="fab" mini color="primary" aria-label="Edit" onClick={this.toggleDialog}>
                             <ContentCreate/>
                         </Button>
-                        <img src={this.state.userAvatarUrl} alt="UserAvatar" className="ProfileHeaderAvatarImage"/>
+                        <img src={this.state.user.userAvatar} alt="UserAvatar" className="ProfileHeaderAvatarImage"/>
                     </CardContent>
                     <CardContent>
                         <Typography variant="headline" component="h2">
-                            {this.state.userName}
+                            UserName {this.state.user.userName}
                         </Typography>
                     </CardContent>
                 </Card>
-                <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
+                <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle} className="dogEditDialog">
                     <DialogTitle>Edit Dog Avatar</DialogTitle>
-                    <DogEdit default={this.state.userAvatarUrl} userBG={this.state.userBG} 
-                        userBreed={this.state.userBreed} userEmotion={this.state.userEmotion} 
-                        userFur={this.state.userFur} dogEditChange={this.avatarChange}
-                    />
-                </Dialog>
-                <ExpansionPanel expanded={this.state.expanded == "UserPanel"} onChange={(e) => this.handleExpansion(e, "UserPanel")}
-                className="ProfileExpansionTab">
-                    <ExpansionPanelSummary>
-                        <Typography> User Settings </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <List fontFamily = "sans-serif"> 
-                            <ListItem>
-                                <ListItemText primary="Display Name" />
-                                <ListItemSecondaryAction>
-                                <Switch
-                                    
-                                />
-                                </ListItemSecondaryAction> 
-                            </ListItem>
-                        </List> 
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel expanded={this.state.expanded === "AdvancedPanel"} onChange={(e) => this.handleExpansion(e, "AdvancedPanel")}
-                className="ProfileExpansionTab">
-                    <ExpansionPanelSummary>
-                        <Typography> Advanced Settings </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <List> 
-                            <ListItem>
-                                <ListItemText primary="Display Name" />
-                                <ListItemSecondaryAction>
-                                <Switch
-                                    
-                                />
-                                </ListItemSecondaryAction> 
-                            </ListItem>
-                        </List> 
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>         
+                    <DialogContent>
+                        <DogEdit userId={this.props.userId} ref={this.dogEditChild}/>
+                    </DialogContent>
+                    <DialogActions style={{textAlign:'center'}}>
+                        <Button variant="contained" id="dogEditSubmit" className="dogEditButton" onClick={this.handleSubmit}> 
+                            Submit
+                        </Button>
+                        <Button variant="contained" id="dogEditCancel" className="dogEditButton" onClick={this.toggleDialog}> 
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog> 
             </div>
         )
     }
