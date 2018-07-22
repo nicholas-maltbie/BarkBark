@@ -9,71 +9,84 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 import firebase from 'firebase';
 import { getUserInfo } from '../Fire.js';
+import mappic from '../mapbg.png';
 
 const FIREBASE_DATA_PATH = "gs://barkbark-9155d.appspot.com/";
 
 function updateUserAvatar(userId, avatar){ //Updates avatar in database, avatar passed in is an object
   var dbRef = firebase.database().ref();
+  console.log(avatar);
   dbRef.child('users/' + userId).update({
       dog: {
-          breed: avatar.breedValue,
-          color: avatar.backgroundValue,
-          emotion: avatar.emotionValue,
-          fur: avatar.furValue,
-          name: "Doggy",
-          eye: avatar.eyeValue
+          breed: avatar.breedValue.name,
+          color: avatar.backgroundValue.color,
+          emotion: avatar.emotionValue.name,
+          eye: avatar.eyeValue.name,
+          fur: avatar.furValue.name,
+          name: "Doggy"
       }
   });
 }
-function uploadUserAvatar(blob){
-  //var uploadTask = firebase.storage().ref().child('users/' + this.props.userId).put(blob);
+function uploadUserAvatar(userId, blob){ //Upload user avatar in storage
+  var uploadTask = firebase.storage().ref().child('/UserProfiles/' + userId + '/profile.jpg').put(blob);
 }
-async function getBackgroundColors() { //Get background color object
+function getImageUrl(location){
+  var storageRef = firebase.storage().ref();
+  var starsRef = storageRef.child(location);
+  return starsRef.getDownloadURL().then(function(url) {
+    return url;
+  });
+}
+function getBackgroundColors() { //Get background color object
   var bgObj = firebase.database().ref('/backgrounds').once("value")
   .then(function (snapshot) {
       if (snapshot.val() != null) {
           return snapshot.val();
       }
   });
-  return await bgObj;
+  return bgObj;
 }
-async function getBreeds() { //Get breeds tree object
+function getBreeds() { //Get breeds tree object
   var breedsObj = firebase.database().ref('/breeds').once("value")
   .then(function (snapshot) {
       if (snapshot.val() != null) {
           return snapshot.val();
       }
   });
-  return await breedsObj;
+  return breedsObj;
 }
-async function getEmotions() { //Get emotions tree object
+function getEmotions() { //Get emotions tree object
   var emotionsObj = firebase.database().ref('/emotions').once("value")
   .then(function (snapshot) {
       if (snapshot.val() != null) {
           return snapshot.val();
       }
   });
-  return await emotionsObj;
+  return emotionsObj;
 }
-async function getEyes() { //Get eyes tree object
+function getEyes() { //Get eyes tree object
   var eyesObj = firebase.database().ref('/eyes').once("value")
   .then(function (snapshot) {
       if (snapshot.val() != null) {
           return snapshot.val();
       }
   });
-  return await eyesObj;
+  return eyesObj;
 }
-async function getFurs() { //Get furs tree object
+function getFurs() { //Get furs tree object
   var fursObj = firebase.database().ref('/furs').once("value")
   .then(function (snapshot) {
       if (snapshot.val() != null) {
           return snapshot.val();
       }
   });
-  return await fursObj;
+  return fursObj;
 }
 
 class DogEdit extends React.Component {
@@ -102,39 +115,40 @@ class DogEdit extends React.Component {
     this.updateEmotion = this.updateEmotion.bind(this);
     this.updateEyes = this.updateEyes.bind(this);
     this.updateFurs = this.updateFurs.bind(this);
+    this.updateCanvas = this.updateCanvas.bind(this);
   }
 
-  componentDidMount() {
-    var userInfo = getUserInfo();
+  async componentDidMount() {
+    var userInfo = await getUserInfo(this.props.userId);
     var bOptions = [], bValue = {};
     var emOptions = [], emValue = {};
     var eyeOptions = [], eyeValue = {};
     var fOptions = [], furValue = {};
     var bgOptions = [], bgValue = {};
-    var breeds = getBreeds(), emotions = getEmotions(), eyes = getEyes(), furs = getFurs(), bgs = getBackgroundColors();
+    var breeds = await getBreeds(), emotions = await getEmotions(), eyes = await getEyes(), furs = await getFurs(), bgs = await getBackgroundColors();
     for(var i in bgs){
-      bgOptions.push({i: bgs[i]});
-      if(bgs[i] == userInfo.dog.color){
+      bgOptions.push({[i]: bgs[i]});
+      if(i == userInfo.dog.color){
         bgValue = {color: i, hex: bgs[i]};
       }
     }
     for(var i in breeds){
-      bOptions.push({i: breeds[i]['name']}); //[{id: 'boxer}, {id: 'spaniel}]
+      bOptions.push({[i]: breeds[i]['name']}); //[{id: 'boxer}, {id: 'spaniel}]
       if(breeds[i]['name'] == userInfo.dog.breed){
         bValue = {id: i, name: breeds[i]['name']};
       }
     }
     for(var i in emotions){
       if(emotions[i]['breed_id'] == bValue.id){
-        emOptions.push({i: emotions[i]['name']});
+        emOptions.push({[i]: emotions[i]['name']});
       }
-      if(emotions[i]['name'] == userInfo.dog.emotion){
+      if(emotions[i]['name'] == userInfo.dog.emotion && emotions[i]['breed_id'] == bValue['id']){
         emValue = {id: i, name: emotions[i]['name'], file: emotions[i]['file']};
       }
     }
     for(var i in eyes){
       if(eyes[i]['emotion_id'] == emValue.id){
-        eyeOptions.push({i: eyes[i]['name']});
+        eyeOptions.push({[i]: eyes[i]['name']});
       }
       if(eyes[i]['name'] == userInfo.dog.eye){
         eyeValue = {id: i, name: eyes[i]['name'], file: eyes[i]['file']};
@@ -142,7 +156,7 @@ class DogEdit extends React.Component {
     }
     for(var i in furs){
       if(furs[i]['emotion_id'] == emValue.id){
-        fOptions.push({i: furs[i]['name']});
+        fOptions.push({[i]: furs[i]['name']});
       }
       if(furs[i]['name'] == userInfo.dog.fur){
         furValue = {id: i, name: furs[i]['name'], file: furs[i]['file']};
@@ -175,7 +189,7 @@ class DogEdit extends React.Component {
     var emotions = getEmotions();
     for(var i in emotions){
       if(emotions[i]['breed_id'] == this.state.values.breedValue['id']){
-        eOptions.push({i: emotions[i]['name']});
+        eOptions.push({[i]: emotions[i]['name']});
       }
     }
     this.setState({
@@ -215,137 +229,150 @@ class DogEdit extends React.Component {
     });
   }
 
-  updateCanvas() { 
+  async updateCanvas() { 
     var c=document.getElementById("dogEditCanvas");
     var ctx=c.getContext("2d");
+    ctx.fillStyle = this.state.values.backgroundValue.color;
+    ctx.fillRect(0, 0, c.width, c.height);
     var furImage = new Image();
     var eyesImage = new Image();
     var emotionImage = new Image();
-    emotionImage.src = "gs://barkbark-9155d.appspot.com/Dog/Boxer/Boxer_Happy.png"
-    //emotionImage.src = FIREBASE_DATA_PATH + this.state.values.emotionValue.file;
-    emotionImage.onload = function() {
-      ctx.drawImage(emotionImage, 0, 0, 300, 300); //image, x, y, width, height
-      eyesImage.src = FIREBASE_DATA_PATH + this.state.values.eyeValue.file;
-      eyesImage.onload = function() {
-          ctx.drawImage(eyesImage, 0, 0, 300, 300);
-          furImage.src = FIREBASE_DATA_PATH + this.state.values.furValue.file;
-          furImage.onload = function() {
-            ctx.drawImage(furImage, 0, 0, 300, 300);
-            c.toBlob(function(blob){
+    emotionImage.src = await getImageUrl(this.state.values.emotionValue['file']);
+    emotionImage.onload = async () => {
+      ctx.drawImage(emotionImage, 0, 0, emotionImage.width, emotionImage.height, 0, 0, c.width, c.height); //image, x, y, width, height
+      eyesImage.src = await getImageUrl(this.state.values.eyeValue['file']);
+      eyesImage.onload = async () => {
+          ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
+          furImage.src = await getImageUrl(this.state.values.furValue['file']);
+          furImage.onload = async () => {
+            ctx.drawImage(furImage, 0, 0, c.width, c.height);
+            c.toBlob((blob) => {
               this.setState({userBlob: blob});
-            });
+            }, 'image/jpeg', 0.95);
           };
         };
       };
     };
 
-  loadOptions(options, type) { //Return an array of tabs based on generated options
+  loadOptions(options, type) { //Return tabs for background and breed
     var tabOptions;
     tabOptions = options.map((value, index) => {
       if(type == "bg"){
-        return <Tab key={index} label={value['color']} style={{backgroundColor: value['hex'], color:'black'}}/>;
+        return <Tab key={index} label={Object.keys(value)} style={{backgroundColor: Object.values(value), color:'white'}}/>;
+      }
+      else if(type == "fur" || type == "eyes"){
+        return <Tab key={index} label={value[Object.keys(value)[0]]} style={{backgroundColor: value[Object.keys(value)[0]], color:'white'}}/>;
       }
       else {
-        return <Tab key={index} label={value['id']} style={{backgroundColor: "white", color:'black'}}/>;
+        return <Tab key={index} label={value[Object.keys(value)[0]]} style={{backgroundColor: "white", color:'black'}}/>;
       }
     });
     return tabOptions;
   }
   
-
   handleChange = (event, value, selector) => { //value is returned index of tab option
-    if(selector == 'BGColor'){
-      this.setState({ values:{ backgroundValue: {color: Object.keys(this.state.options.furOptions[value])[0], hex: this.state.options.backgroundColorOptions[value]} } });
+    if(selector == 'bgcolor'){
+      this.setState( prevState => ({ 
+        values:{ 
+          ...prevState.values,
+          backgroundValue: {color: Object.keys(this.state.options.backgroundColorOptions[value])[0], hex: Object.values(this.state.options.backgroundColorOptions[value])[0]} 
+        } 
+      }), () => this.updateCanvas());
     }
-    else if(selector == 'Fur'){
-      this.setState({ values:{ furValue: {id: Object.keys(this.state.options.furOptions[value])[0], name: this.state.options.furOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.furOptions[value])[0]['file']]} } });
+    else if(selector == 'fur'){
+      this.setState( prevState => ({ 
+        values:{ 
+          ...prevState.values,
+          furValue: {id: Object.keys(this.state.options.furOptions[value])[0], name: this.state.options.furOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.furOptions[value])[0]['file']]} 
+        }
+      }), () => this.updateCanvas());
     }
-    else if(selector == 'Emotion'){
-      this.setState({ values:{ emotionValue: {id: Object.keys(this.state.options.emotionOptions[value])[0], name: this.state.options.emotionOptions[value]['id'], file: getEmotions()[Object.keys(this.state.options.emotionOptions[value])[0]['file']]} } });
+    else if(selector == 'emotion'){
+      this.setState( prevState => ({ 
+        values:{ 
+          ...prevState.values,
+          emotionValue: {id: Object.keys(this.state.options.emotionOptions[value])[0], name: this.state.options.emotionOptions[value]['id'], file: getEmotions()[Object.keys(this.state.options.emotionOptions[value])[0]['file']]} 
+        }
+      }), () => this.updateCanvas());
       this.updateEmotion();
     }
-    else if(selector == 'Eyes'){
-      this.setState({ values:{ eyeValue: {id: Object.keys(this.state.options.eyeOptions[value])[0], name: this.state.options.eyeOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.eyeOptions[value])[0]['file']]} } });
+    else if(selector == 'eye'){
+      this.setState(prevState => ({ 
+        values:{ 
+          ...prevState.values,
+          eyeValue: {id: Object.keys(this.state.options.eyeOptions[value])[0], name: this.state.options.eyeOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.eyeOptions[value])[0]['file']]} 
+        }
+      }), () => this.updateCanvas());
     }
-    else if(selector == 'Breed'){
-      this.setState({ values:{ breedValue: {id: Object.keys(this.state.options.breedOptions[value])[0], name: this.state.options.breedOptions[value]['id']} } });
+    else if(selector == 'breed'){
+      this.setState(prevState => ({ 
+        values:{ 
+          ...prevState.values,
+          breedValue: {id: Object.keys(this.state.options.breedOptions[value])[0], name: this.state.options.breedOptions[value]['id']} 
+        }
+      }), () => this.updateCanvas());
       this.updateBreed();
-    }
-
-    if(selector != 'BGColor'){
-      this.updateCanvas();
     }
   };
 
   handleSubmit() {
     updateUserAvatar(this.props.userId, this.state.values); //Update avatar attributes with text values
-    uploadUserAvatar(this.state.userBlob); //Upload full avatar image
+    uploadUserAvatar(this.props.userId, this.state.userBlob); //Upload full avatar image
   }
 
   render() {
     
     return (
       <div className="dogEditWindow">
-        <div className="dogPreviewStyle" style={{backgroundColor: this.state.values.backgroundValue}}>
+        <div className="dogPreview" style={{backgroundColor: this.state.values.backgroundValue}}>
           <canvas className="dogPreviewAvatarImageStyle" id="dogEditCanvas"/>
         </div>
-        <div className="valueDogSelectorStyle">
-          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-              <Typography> Breed </Typography>
-              <Tabs
-                value={this.state.breedValue}
-                onChange={(event, value) => this.handleChange(event, value, 'Breed')}
-                scrollable
-                scrollButtons="auto"
-              >
-                {this.loadOptions(this.state.options.breedOptions, "breed")}
-              </Tabs>
-            </AppBar>
-          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-            <Typography> Background Color </Typography>
-            <Tabs
-              value={this.state.backgroundValue}
-              onChange={(event, value) => this.handleChange(event, value, 'BGColor')}
-              scrollable
-              scrollButtons="auto"
-            >
-              {this.loadOptions(this.state.options.backgroundColorOptions, "bg")}
-            </Tabs>
-          </AppBar>
-          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-            <Typography> Fur Color </Typography>
-            <Tabs
-              value={this.state.furValue}
-              onChange={(event, value) => this.handleChange(event, value, 'Fur')}
-              scrollable
-              scrollButtons="auto"
-            >
-              {this.loadOptions(this.state.options.furOptions, "fur")}
-            </Tabs>
-          </AppBar>
-          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-            <Typography> Emotion </Typography>
-            <Tabs
-              value={this.state.eyeColorValue}
-              onChange={(event, value) => this.handleChange(event, value, 'Emotion')}
-              scrollable
-              scrollButtons="auto"
-            >
-              {this.loadOptions(this.state.options.emotionOptions, "emotion")}
-            </Tabs>
-          </AppBar>
-          <AppBar position="static" color="default" className="valueDogSelectorBarStyle">
-            <Typography> Eyes </Typography>
-            <Tabs
-              value={this.state.eyeColorValue}
-              onChange={(event, value) => this.handleChange(event, value, 'Eyes')}
-              scrollable
-              scrollButtons="auto"
-            >
-              {this.loadOptions(this.state.options.eyeOptions, "eye")}
-            </Tabs>
-          </AppBar>
-          <Button className="dogEditSubmit" variant="contained" onClick={this.handleSubmit}> Submit </Button>
+        <div className="dogOptionsSelect">
+          <Typography style={{textAlign:'center'}}> Breed </Typography>
+          <Tabs
+            value={this.state.breedValue}
+            onChange={(event, value) => this.handleChange(event, value, 'breed')}
+            scrollable
+            scrollButtons="auto"
+          >
+            {this.loadOptions(this.state.options.breedOptions, "breed")}
+          </Tabs>
+          <Typography style={{textAlign:'center'}}> Background Color </Typography>
+          <Tabs
+            value={this.state.backgroundValue}
+            onChange={(event, value) => this.handleChange(event, value, 'bgcolor')}
+            scrollable
+            scrollButtons="auto"
+          >
+            {this.loadOptions(this.state.options.backgroundColorOptions, "bg")}
+          </Tabs>
+          <Typography style={{textAlign:'center'}}> Emotion </Typography>
+          <Tabs
+            value={this.state.breedValue}
+            onChange={(event, value) => this.handleChange(event, value, 'emotion')}
+            scrollable
+            scrollButtons="auto"
+          >
+            {this.loadOptions(this.state.options.emotionOptions, "emotion")}
+          </Tabs>
+          <Typography style={{textAlign:'center'}}> Fur </Typography>
+          <Tabs
+            value={this.state.breedValue}
+            onChange={(event, value) => this.handleChange(event, value, 'fur')}
+            scrollable
+            scrollButtons="auto"
+          >
+            {this.loadOptions(this.state.options.furOptions, "fur")}
+          </Tabs>
+          <Typography style={{textAlign:'center'}}> Eyes </Typography>
+          <Tabs
+            value={this.state.breedValue}
+            onChange={(event, value) => this.handleChange(event, value, 'eyes')}
+            scrollable
+            scrollButtons="auto"
+          >
+            {this.loadOptions(this.state.options.eyeOptions, "eyes")}
+          </Tabs>
         </div>
       </div>
     );

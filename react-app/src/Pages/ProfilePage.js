@@ -14,6 +14,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import Dialog from '@material-ui/core/Dialog';
 import ContentCreate from 'material-ui/svg-icons/content/create.js';
 import DogEdit from '../Components/DogEdit.js';
@@ -32,16 +34,12 @@ class ProfilePage extends React.Component {
             }
         }
         this.toggleDialog = this.toggleDialog.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.dogEditChild = React.createRef();
     }
 
     componentDidMount() {
         this.displayUserInfo(this.props.userId);
-    }
-
-    handleExpansion(event, panel){
-        this.setState({
-            expanded: (this.state.expanded == panel) ? null : panel
-        });
     }
     toggleDialog(){
         this.setState({
@@ -57,6 +55,10 @@ class ProfilePage extends React.Component {
             }
         });
     }
+    handleSubmit() {
+        this.dogEditChild.current.handleSubmit();
+    }
+
     render(){
         return(
             <div className="Page" id="ProfilePageScreenStyle">
@@ -73,9 +75,19 @@ class ProfilePage extends React.Component {
                         </Typography>
                     </CardContent>
                 </Card>
-                <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
+                <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle} className="dogEditDialog">
                     <DialogTitle>Edit Dog Avatar</DialogTitle>
-                    <DogEdit userId={this.props.userId}/>
+                    <DialogContent>
+                        <DogEdit userId={this.props.userId} ref={this.dogEditChild}/>
+                    </DialogContent>
+                    <DialogActions style={{textAlign:'center'}}>
+                        <Button variant="contained" id="dogEditSubmit" className="dogEditButton" onClick={this.handleSubmit}> 
+                            Submit
+                        </Button>
+                        <Button variant="contained" id="dogEditCancel" className="dogEditButton" onClick={this.toggleDialog}> 
+                            Cancel
+                        </Button>
+                    </DialogActions>
                 </Dialog> 
             </div>
         )
