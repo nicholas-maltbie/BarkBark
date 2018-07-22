@@ -57,6 +57,24 @@ function CenterControl(controlDiv, map) {
   });
 }
 
+function TestButton(controlDiv, map, test_fn) {
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.className = "CenterControl";
+  controlUI.title = 'Test Feature';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.innerHTML = 'Test Feature';
+  controlUI.appendChild(controlText);
+
+  // Setup the click event listeners: simply set the map to Chicago.
+  controlUI.addEventListener('click', function() {
+    test_fn();
+  });
+}
+
 function BarkControl(controlDiv, map, updateBarkDialog) {
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
@@ -73,7 +91,6 @@ function BarkControl(controlDiv, map, updateBarkDialog) {
   controlUI.addEventListener('click', function() {
     updateBarkDialog(true);
   });
-
 }
 
 class Map extends Component {
@@ -121,7 +138,11 @@ class Map extends Component {
   componentWillUnmount() {
     var centerElem = document.getElementById("CenterControl")
     var barkElem = document.getElementById("BarkControl")
+    var testControl = document.getElementById("TestControl")
     
+    if (testControl != null) {
+      testControl.parentNode.removeChild(testControl)
+    }
     if (centerElem != null) {
       centerElem.parentNode.removeChild(centerElem)
     }
@@ -149,6 +170,15 @@ class Map extends Component {
     centerControlDiv.setAttribute("id", "CenterControl");
     var centerControl = new CenterControl(centerControlDiv, this.map);
     
+    var testControlDiv = document.createElement('div');
+    testControlDiv.setAttribute("id", "TestButton");
+    var testControl = new TestButton(testControlDiv, this.map, 
+      () => {
+        // Put your code here for testing features
+        console.log('test_feature')
+      }
+    )
+    
     var barkControlDiv = document.createElement('div');
     barkControlDiv.setAttribute("id", "BarkControl");
     var barkControl = new BarkControl(barkControlDiv, 
@@ -157,7 +187,9 @@ class Map extends Component {
 
     barkControlDiv.index = 1;
     centerControlDiv.index = 1;
+    testControlDiv.index = 1
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(barkControlDiv);
+    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(testControlDiv);
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
