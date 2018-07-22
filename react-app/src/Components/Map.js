@@ -119,6 +119,11 @@ class Map extends Component {
       this.userMarker.setPosition(this.userLocation)
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
+    this.getCurrntLocation = this.getCurrntLocation.bind(this);
+  }
+  
+  getCurrntLocation() {
+    return this.userLocation
   }
 
   updateBarkDialog(newState) {
@@ -209,7 +214,7 @@ class Map extends Component {
         <div className="Map" id="map">
           <MakeBark open = {this.state.dialogOpen} 
                     updateFn = {this.updateBarkDialog}
-                    onYes = {() => {MakeFireBark(() => {return this.userLocation})}} 
+                    onYes = {() => {MakeFireBark(this.getCurrntLocation)}} 
                     onNo = {() => {}}/>
         </div>
         
