@@ -43,10 +43,7 @@ var root = firebase.database().ref()
 var drawn_barks = {}
 
 var updateRegion = function() {
-  console.log("helloworld")
-  console.log(this)
   var new_region = GetRegion(getLocationFn())
-  console.log(new_region + " " + query_region)
   if (new_region != query_region) {
     query_region = new_region
     closeListener()
@@ -87,12 +84,16 @@ var update_fn = function(bark) {
 }
 
 var closeListener = function(new_region) {
-  root.child('barks').child(new_region).off('child_added', update_fn)
+  if (new_region != null) {
+    root.child('barks').child(new_region).off('child_added', update_fn)
+  }
 }
 
 export function closeBarkListener() {
   closeListener(query_region)
   clearInterval(update_task_id)
+  query_region = null
+  drawn_barks = {}
 }
 
 export function setupBarkListener(mapThingy, locationThingy) {
@@ -105,6 +106,7 @@ export function setupBarkListener(mapThingy, locationThingy) {
       setupListener(new_region)
     }
   )
+  update_task_id = setInterval(updateRegion, 1000)
 }
 
 
