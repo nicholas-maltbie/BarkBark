@@ -11,7 +11,7 @@ import { MakeFireBark } from './bark.js';
 
 const google = window.google;
 
-export var rejected = false;
+export var rejected = false
 
 export const getLocation = () => {
   const geolocation = navigator.geolocation;
@@ -55,10 +55,9 @@ function CenterControl(controlDiv, map) {
                                                   lng: newPos.coords.longitude})
     );
   });
-      clearInterval(this.updateLocationTaskId)
 }
 
-function BarkControl(controlDiv, map, updateBarkDialog, getLocationFn) {
+function BarkControl(controlDiv, map, updateBarkDialog) {
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
   controlUI.className = "BarkControl";
@@ -72,16 +71,7 @@ function BarkControl(controlDiv, map, updateBarkDialog, getLocationFn) {
 
   // Setup the click event listeners: simply set the map to Chicago.
   controlUI.addEventListener('click', function() {
-    //var uitest = new MakeBark;
-    //uitest.handleClickOpen();
-    //MakeBark.handleClickOpen;
-    //var UIspace = document.createElement('MakeBark');
-    //var UIDialog = new MakeBark;
-    //UIspace.appendChild(MakeBark);
-    //document.appendChild(MakeBark);
-    //UIDialog.appendChild(MakeBark);
     updateBarkDialog(true);
-    MakeFireBark(getLocationFn())
   });
 
 }
@@ -119,6 +109,10 @@ class Map extends Component {
   }
   
   updateLocation(newPos) {
+    if (rejected) {
+      clearInterval(this.updateLocationTaskId)
+      this.updateLocationTaskId = null
+    }
     this.userLocation = {lat: newPos.coords.latitude, lng: newPos.coords.longitude}
     this.map.setCenter(this.userLocation)
     this.updateDogLocation()
@@ -159,8 +153,7 @@ class Map extends Component {
     barkControlDiv.setAttribute("id", "BarkControl");
     var barkControl = new BarkControl(barkControlDiv, 
       this.map, 
-      this.updateBarkDialog, 
-      () => {return this.userLocation});
+      this.updateBarkDialog);
 
     barkControlDiv.index = 1;
     centerControlDiv.index = 1;
@@ -182,7 +175,10 @@ class Map extends Component {
     return(
       
         <div className="Map" id="map">
-          <MakeBark open = {this.state.dialogOpen} updateFn = {this.updateBarkDialog}/>
+          <MakeBark open = {this.state.dialogOpen} 
+                    updateFn = {this.updateBarkDialog}
+                    onYes = {() => {MakeFireBark(() => {return this.userLocation})}} 
+                    onNo = {() => {}}/>
         </div>
         
         

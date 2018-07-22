@@ -18,82 +18,52 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 class MakeBark extends React.Component{
-    constructor(props){
-        super(props);
-    console.log(props)
-    this.state = {
-        open: false,
-        updateFn: props.updateFn,
-      }
-      this.handleClickOpen=this.handleClickOpen.bind(this);
-      this.handleClose=this.handleClose.bind(this);
+  constructor(props){
+      super(props);
+  console.log(props)
+  this.state = {
+      open: false,
+      updateFn: props.updateFn,
     }
-    
-      handleClickOpen = () => {
-        this.props.updateFn(true)
-      };
-    
-      handleClose = () => {
-        this.props.updateFn(false)
-      };
-    
-    
-      render() {
-        return (
-          <div>
-            <Dialog
-              open={this.props.open}
-              onClose={this.handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
+    this.handleClickOpen=this.handleClickOpen.bind(this);
+    this.handleClose=this.handleClose.bind(this);
+  }
+  
+    handleClickOpen = () => {
+      this.props.updateFn(true)
+    };
+  
+    handleClose = (other_fn) => {
+      this.props.updateFn(false)
+      other_fn()
+    };
+  
+  
+    render() {
+      return (
+        <div>
+          <Dialog
+            open={this.props.open}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">{"Bark?"}</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                 Are you sure you want to bark at this location?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
-                  No
-                </Button>
-                <Button onClick={this.handleClose} color="primary" autoFocus>
-                  Yes
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
-        );
-      }
-    }
-
-
-
-//class MakeBark extends React.Component{
-  //  constructor(props){
-    //    super(props);
-      //  this.state ={
-
-       // }
-        //this.toggleDialog = this.toggleDialog.bind(this);
-    //}
-    //toggleDialog(){
-      //  this.setState({
-        //    dialogToggle: !this.state.dialogToggle
-        //});
-    //}
-
-    //render(){
-      //  return (
-        //  <div className = "MarkBarkWindow">
-          //  <Dialog onClose={this.toggleDialog} open={this.state.dialogToggle}>
-            //    <Button className="YesButton" variant="contained" onClick={console.log("Clicked yes")}> Yes </Button>
-              //  <Button className="NoButton" variant="contained" onClick={console.log("Clicked no")}> No </Button>
-            //</Dialog>b
-          //</div>
-        //);
-
-        
-   // }
-//}
+          <DialogTitle id="alert-dialog-title">{"Bark?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+             Are you sure you want to bark at this location?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => {this.handleClose(this.props.onNo)}} color="primary">
+              No
+            </Button>
+            <Button onClick={() => {this.handleClose(this.props.onYes)}} color="primary" autoFocus>
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
+}
 export default MakeBark;
