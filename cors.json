@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["localhost:3000", "bark.fyi"],
+    "origin": ["localhost:3000", "https://bark.fyi"],
     "method": ["GET", "POST"],
     "maxAgeSeconds": 3600
   }
