@@ -6,7 +6,7 @@ import MakeBark from '../Components/MakeBark.js';
 
 import { CenterControl, TestButton, BarkControl } from "./Controls.js"
 import { getUserDogProfileURL } from './User.js';
-import { MakeFireBark } from './bark.js';
+import { MakeFireBark, setupBarkListener, closeBarkListener } from './bark.js';
 
 // Using this api
 // https://developers.google.com/maps/documentation/javascript/tutorial
@@ -28,10 +28,10 @@ export const getLocation = () => {
         geolocation.getCurrentPosition((position) => {
           resolve(position);
         }, () => {
+          rejected = true
           reject (
             alert("This app requires permission to share your location, https://support.google.com/chrome/answer/142065?hl=en")
           );
-          rejected = true
         });
     })
     return location
@@ -44,15 +44,27 @@ class Map extends Component {
   constructor(props) {
     super(props);
     
+    this.userCircle = new google.maps.Marker({
+      position: new google.maps.LatLng(0,0),
+      icon: {
+        url: "https://png.icons8.com/small/1600/filled-circle.png",
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(32, 32),
+        scaledSize: new google.maps.Size(65, 65)
+      },
+      zIndex: 1,
+      map: this.map
+    })
     this.userIcon = {
       origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(16, 16),
+      anchor: new google.maps.Point(24, 24),
       scaledSize: new google.maps.Size(48, 48)
     }
     this.userMarker = new google.maps.Marker({
       position: new google.maps.LatLng(0,0),
       icon: this.userIcon,
       map: this.map,
+      zIndex: 2,
     })
     this.state ={
       dialogOpen: false,
@@ -61,6 +73,7 @@ class Map extends Component {
     this.userLocation = {lat: 0, lng: 0}
     this.updateLocation = this.updateLocation.bind(this);
     this.updateDogLocation = () => {
+      this.userCircle.setPosition(this.userLocation)
       this.userMarker.setPosition(this.userLocation)
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
@@ -110,6 +123,8 @@ class Map extends Component {
     if (this.updateLocationTaskId != null) {
       clearInterval(this.updateLocationTaskId)
     }
+    
+    closeBarkListener()
   }
   
   componentDidMount () {
@@ -122,6 +137,7 @@ class Map extends Component {
     });
     
     this.userMarker.setMap(this.map)
+    this.userCircle.setMap(this.map)
     
     var centerControlDiv = document.createElement('div');
     centerControlDiv.setAttribute("id", "CenterControl");
@@ -158,6 +174,8 @@ class Map extends Component {
       })
     }
     this.updateLocationTaskId = setInterval(updateLocationTask, 500)
+    
+    setupBarkListener(this.map, this.getCurrntLocation)
   }
   
   render() {
