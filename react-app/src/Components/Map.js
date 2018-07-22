@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import firebase from 'firebase'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MakeBark from '../Components/MakeBark.js';
 
-
+import { CenterControl, TestButton, BarkControl } from "./Controls.js"
+import { getUserDogProfileURL } from './User.js';
 import { MakeFireBark } from './bark.js';
 
 // Using this api
@@ -37,69 +39,12 @@ export const getLocation = () => {
   return new Promise(() => { return {"coords" : {"longitude":0, "latitude":0} } })
 };
 
-function CenterControl(controlDiv, map) {
-  // Set CSS for the control border.
-  var controlUI = document.createElement('div');
-  controlUI.className = "CenterControl";
-  controlUI.title = 'Click to recenter the map';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior.
-  var controlText = document.createElement('div');
-  controlText.innerHTML = '<img src="https://cdn4.iconfinder.com/data/icons/social-communication/142/target-512.png" width=48px height=48px/>';
-  controlUI.appendChild(controlText);
-
-  // Setup the click event listeners: simply set the map to Chicago.
-  controlUI.addEventListener('click', function() {
-    getLocation().then((newPos) => map.setCenter({lat: newPos.coords.latitude, 
-                                                  lng: newPos.coords.longitude})
-    );
-  });
-}
-
-function TestButton(controlDiv, map, test_fn) {
-  // Set CSS for the control border.
-  var controlUI = document.createElement('div');
-  controlUI.className = "CenterControl";
-  controlUI.title = 'Test Feature';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior.
-  var controlText = document.createElement('div');
-  controlText.innerHTML = 'Test Feature';
-  controlUI.appendChild(controlText);
-
-  // Setup the click event listeners: simply set the map to Chicago.
-  controlUI.addEventListener('click', function() {
-    test_fn();
-  });
-}
-
-function BarkControl(controlDiv, map, updateBarkDialog) {
-  // Set CSS for the control border.
-  var controlUI = document.createElement('div');
-  controlUI.className = "BarkControl";
-  controlUI.title = 'Make a bark';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior.
-  var controlText = document.createElement('div');
-  controlText.innerHTML = 'Bark!';
-  controlUI.appendChild(controlText);
-
-  // Setup the click event listeners: simply set the map to Chicago.
-  controlUI.addEventListener('click', function() {
-    updateBarkDialog(true);
-  });
-}
-
 class Map extends Component {
   
   constructor(props) {
     super(props);
     
     this.userIcon = {
-      url: 'https://firebasestorage.googleapis.com/v0/b/barkbark-9155d.appspot.com/o/Dog%2FBoxer_Full.png?alt=media&token=e9ac48bb-b112-4919-b082-629ad6e0fbc2',
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(16, 16),
       scaledSize: new google.maps.Size(48, 48)
@@ -120,6 +65,13 @@ class Map extends Component {
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
     this.getCurrntLocation = this.getCurrntLocation.bind(this);
+    
+    getUserDogProfileURL(firebase.auth().currentUser.uid).then(
+      (imageURL) => {
+        this.userIcon.url = imageURL
+        this.userMarker.setIcon(this.userIcon)
+      }
+    )
   }
   
   getCurrntLocation() {
@@ -173,7 +125,7 @@ class Map extends Component {
     
     var centerControlDiv = document.createElement('div');
     centerControlDiv.setAttribute("id", "CenterControl");
-    var centerControl = new CenterControl(centerControlDiv, this.map);
+    var centerControl = new CenterControl(centerControlDiv, this.map, getLocation);
     
     var testControlDiv = document.createElement('div');
     testControlDiv.setAttribute("id", "TestButton");

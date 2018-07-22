@@ -20,7 +20,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 class MakeBark extends React.Component{
   constructor(props){
       super(props);
-  console.log(props)
   this.state = {
       open: false,
       updateFn: props.updateFn,
