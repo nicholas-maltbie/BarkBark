@@ -21,7 +21,6 @@ const FIREBASE_DATA_PATH = "gs://barkbark-9155d.appspot.com/";
 
 function updateUserAvatar(userId, avatar){ //Updates avatar in database, avatar passed in is an object
   var dbRef = firebase.database().ref();
-  console.log(avatar);
   dbRef.child('users/' + userId).update({
       dog: {
           breed: avatar.breedValue.name,
@@ -95,11 +94,11 @@ class DogEdit extends React.Component {
     
     this.state = { //initialLoad variable may be needed for intitial canvas update
       values: { //Values are objects properties (id, name, filename) or (id, name) for breed or (color, hex) for bg
-        backgroundValue: {color: "white", hex: "#FFFFFF"},
-        furValue: {id: "", name: "", file: ""},
-        emotionValue: {id: "", name: "", file: ""},
-        breedValue: {id: "", name: ""},
-        eyeValue: {id: "", name: "", file: ""},
+        backgroundValue: {color: "white", hex: "#FFFFFF", index: 0},
+        furValue: {id: "", name: "", file: "", index: 0},
+        emotionValue: {id: "", name: "", file: "", index: 0},
+        breedValue: {id: "", name: "", index: 0},
+        eyeValue: {id: "", name: "", file: "", index: 0},
       },
       options: { //Options are an array of objects that hold in { id: name } format
         breedOptions: [{id: ""}],
@@ -119,6 +118,7 @@ class DogEdit extends React.Component {
   }
 
   async componentDidMount() {
+    var count = 0;
     var userInfo = await getUserInfo(this.props.userId);
     var bOptions = [], bValue = {};
     var emOptions = [], emValue = {};
@@ -129,39 +129,49 @@ class DogEdit extends React.Component {
     for(var i in bgs){
       bgOptions.push({[i]: bgs[i]});
       if(i == userInfo.dog.color){
-        bgValue = {color: i, hex: bgs[i]};
+        bgValue = {color: i, hex: bgs[i], index: count};
       }
+      count++;
     }
+    count = 0;
     for(var i in breeds){
       bOptions.push({[i]: breeds[i]['name']}); //[{id: 'boxer}, {id: 'spaniel}]
       if(breeds[i]['name'] == userInfo.dog.breed){
-        bValue = {id: i, name: breeds[i]['name']};
+        bValue = {id: i, name: breeds[i]['name'], index: count};
       }
+      count++;
     }
+    count = 0;
     for(var i in emotions){
       if(emotions[i]['breed_id'] == bValue.id){
         emOptions.push({[i]: emotions[i]['name']});
       }
       if(emotions[i]['name'] == userInfo.dog.emotion && emotions[i]['breed_id'] == bValue['id']){
-        emValue = {id: i, name: emotions[i]['name'], file: emotions[i]['file']};
+        emValue = {id: i, name: emotions[i]['name'], file: emotions[i]['file'], index: count};
       }
+      count++;
     }
+    count = 0;
     for(var i in eyes){
       if(eyes[i]['emotion_id'] == emValue.id){
         eyeOptions.push({[i]: eyes[i]['name']});
       }
       if(eyes[i]['name'] == userInfo.dog.eye){
-        eyeValue = {id: i, name: eyes[i]['name'], file: eyes[i]['file']};
+        eyeValue = {id: i, name: eyes[i]['name'], file: eyes[i]['file'], index: count};
       }
+      count++;
     }
+    count = 0;
     for(var i in furs){
       if(furs[i]['emotion_id'] == emValue.id){
         fOptions.push({[i]: furs[i]['name']});
       }
       if(furs[i]['name'] == userInfo.dog.fur){
-        furValue = {id: i, name: furs[i]['name'], file: furs[i]['file']};
+        furValue = {id: i, name: furs[i]['name'], file: furs[i]['file'], index: count};
       }
+      count++;
     }
+    count = 0;
     this.setState({
       values: {
         backgroundValue: bgValue,
@@ -275,7 +285,7 @@ class DogEdit extends React.Component {
       this.setState( prevState => ({ 
         values:{ 
           ...prevState.values,
-          backgroundValue: {color: Object.keys(this.state.options.backgroundColorOptions[value])[0], hex: Object.values(this.state.options.backgroundColorOptions[value])[0]} 
+          backgroundValue: {color: Object.keys(this.state.options.backgroundColorOptions[value])[0], hex: Object.values(this.state.options.backgroundColorOptions[value])[0], index: value} 
         } 
       }), () => this.updateCanvas());
     }
@@ -283,7 +293,7 @@ class DogEdit extends React.Component {
       this.setState( prevState => ({ 
         values:{ 
           ...prevState.values,
-          furValue: {id: Object.keys(this.state.options.furOptions[value])[0], name: this.state.options.furOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.furOptions[value])[0]['file']]} 
+          furValue: {id: Object.keys(this.state.options.furOptions[value])[0], name: this.state.options.furOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.furOptions[value])[0]['file']], index: value} 
         }
       }), () => this.updateCanvas());
     }
@@ -291,7 +301,7 @@ class DogEdit extends React.Component {
       this.setState( prevState => ({ 
         values:{ 
           ...prevState.values,
-          emotionValue: {id: Object.keys(this.state.options.emotionOptions[value])[0], name: this.state.options.emotionOptions[value]['id'], file: getEmotions()[Object.keys(this.state.options.emotionOptions[value])[0]['file']]} 
+          emotionValue: {id: Object.keys(this.state.options.emotionOptions[value])[0], name: this.state.options.emotionOptions[value]['id'], file: getEmotions()[Object.keys(this.state.options.emotionOptions[value])[0]['file']], index: value} 
         }
       }), () => this.updateCanvas());
       this.updateEmotion();
@@ -300,7 +310,7 @@ class DogEdit extends React.Component {
       this.setState(prevState => ({ 
         values:{ 
           ...prevState.values,
-          eyeValue: {id: Object.keys(this.state.options.eyeOptions[value])[0], name: this.state.options.eyeOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.eyeOptions[value])[0]['file']]} 
+          eyeValue: {id: Object.keys(this.state.options.eyeOptions[value])[0], name: this.state.options.eyeOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.eyeOptions[value])[0]['file']], index: value} 
         }
       }), () => this.updateCanvas());
     }
@@ -308,7 +318,7 @@ class DogEdit extends React.Component {
       this.setState(prevState => ({ 
         values:{ 
           ...prevState.values,
-          breedValue: {id: Object.keys(this.state.options.breedOptions[value])[0], name: this.state.options.breedOptions[value]['id']} 
+          breedValue: {id: Object.keys(this.state.options.breedOptions[value])[0], name: this.state.options.breedOptions[value]['id'], index: value} 
         }
       }), () => this.updateCanvas());
       this.updateBreed();
@@ -328,48 +338,53 @@ class DogEdit extends React.Component {
           <canvas className="dogPreviewAvatarImageStyle" id="dogEditCanvas"/>
         </div>
         <div className="dogOptionsSelect">
-          <Typography style={{textAlign:'center'}}> Breed </Typography>
+          <Typography align="center" className="dogOptionSelectTitle"> Breed </Typography>
           <Tabs
-            value={this.state.breedValue}
+            value={this.state.values.breedValue['index']}
             onChange={(event, value) => this.handleChange(event, value, 'breed')}
             scrollable
             scrollButtons="auto"
+            className="dogOptionSelectTab"
           >
             {this.loadOptions(this.state.options.breedOptions, "breed")}
           </Tabs>
-          <Typography style={{textAlign:'center'}}> Background Color </Typography>
+          <Typography align="center" className="dogOptionSelectTitle"> Background Color </Typography>
           <Tabs
-            value={this.state.backgroundValue}
+            value={this.state.values.backgroundValue['index']}
             onChange={(event, value) => this.handleChange(event, value, 'bgcolor')}
             scrollable
             scrollButtons="auto"
+            className="dogOptionSelectTab"
           >
             {this.loadOptions(this.state.options.backgroundColorOptions, "bg")}
           </Tabs>
-          <Typography style={{textAlign:'center'}}> Emotion </Typography>
+          <Typography align="center" className="dogOptionSelectTitle"> Emotion </Typography>
           <Tabs
-            value={this.state.breedValue}
+            value={this.state.values.emotionValue['index']}
             onChange={(event, value) => this.handleChange(event, value, 'emotion')}
             scrollable
             scrollButtons="auto"
+            className="dogOptionSelectTab"
           >
             {this.loadOptions(this.state.options.emotionOptions, "emotion")}
           </Tabs>
-          <Typography style={{textAlign:'center'}}> Fur </Typography>
+          <Typography align="center" className="dogOptionSelectTitle"> Fur </Typography>
           <Tabs
-            value={this.state.breedValue}
+            value={this.state.values.furValue['index']}
             onChange={(event, value) => this.handleChange(event, value, 'fur')}
             scrollable
             scrollButtons="auto"
+            className="dogOptionSelectTab"
           >
             {this.loadOptions(this.state.options.furOptions, "fur")}
           </Tabs>
-          <Typography style={{textAlign:'center'}}> Eyes </Typography>
+          <Typography align="center" className="dogOptionSelectTitle"> Eyes </Typography>
           <Tabs
-            value={this.state.breedValue}
+            value={this.state.values.eyeValue['index']}
             onChange={(event, value) => this.handleChange(event, value, 'eyes')}
             scrollable
             scrollButtons="auto"
+            className="dogOptionSelectTab"
           >
             {this.loadOptions(this.state.options.eyeOptions, "eyes")}
           </Tabs>

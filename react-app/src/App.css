@@ -100,6 +100,11 @@
   padding: 5px;
   border-radius: 5%;
 }
+.dogOptionSelectTab {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .dogEditButton {
   width:20%;
 }
