@@ -220,7 +220,7 @@ class DogEdit extends React.Component {
     var fOptions = [], fValue;
     var furs = this.furs;
     for(var i in furs){
-      if(furs[i]['emotion_id'] == this.state.values.furValue['id']){
+      if(furs[i]['emotion_id'] == this.state.values.emotionValue['id']){
         fOptions.push({i: furs[i]['name']});
       }
     }
