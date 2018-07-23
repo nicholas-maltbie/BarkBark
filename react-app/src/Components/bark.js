@@ -41,6 +41,7 @@ var map = null
 var root = firebase.database().ref()
 
 var drawn_barks = {}
+var bark_data = {}
 
 var updateRegion = function() {
   var new_region = GetRegion(getLocationFn())
@@ -49,6 +50,19 @@ var updateRegion = function() {
     closeListener()
     setupListener(new_region)
   }
+  var cutoff = new Date().getTime() - readDelay + 1000
+  Object.keys(drawn_barks).forEach((key) => {
+    if(bark_data[key].timestamp < cutoff) {
+      removeMarker(key)
+    }
+  })
+  
+}
+
+var removeMarker = function(key) {
+  drawn_barks[key].setMap(null)
+  delete drawn_barks[key]
+  delete bark_data[key]
 }
 
 var addMarker = function(barkData, key) {
@@ -61,6 +75,7 @@ var addMarker = function(barkData, key) {
       map: map,
     })
     drawn_barks[key] = marker
+    bark_data[key] = barkData
     getUserDogProfileURL(barkData.owner).then((url) => {
       marker.setIcon({
         url: url,
@@ -93,6 +108,9 @@ export function closeBarkListener() {
   closeListener(query_region)
   clearInterval(update_task_id)
   query_region = null
+  Object.keys(drawn_barks).forEach((key) => {
+    removeMarker(key)
+  })
   drawn_barks = {}
 }
 
