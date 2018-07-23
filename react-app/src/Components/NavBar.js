@@ -91,7 +91,6 @@ class NavBar extends React.Component {
         <FlatButton 
           onClick={this.props.handleDrawerToggle} 
           style={NavBarButtonStyle} 
-			
           icon={ <Person color={navButtonColor}/>}/>
 		  <div backgroundColor = "#000">
         <Drawer open={!this.props.drawerClose}>
