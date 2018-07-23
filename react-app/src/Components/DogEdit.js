@@ -35,19 +35,24 @@ function updateUserAvatar(userId, avatar){ //Updates avatar in database, avatar 
 function uploadUserAvatar(userId, blob){ //Upload user avatar in storage
   var uploadTask = firebase.storage().ref().child('/UserProfiles/' + userId + '/profile.jpg').put(blob);
 }
+
 function getImageUrl(location){
-  var storageRef = firebase.storage().ref();
-  var starsRef = storageRef.child(location);
-  return starsRef.getDownloadURL().then(function(url) {
-    return url;
-  });
+  var storageRef = firebase.storage().ref()
+  var starsRef = storageRef.child(location)
+  return starsRef.getDownloadURL()
 }
 function getBackgroundColors() { //Get background color object
   var bgObj = firebase.database().ref('/backgrounds').once("value")
   .then(function (snapshot) {
-      if (snapshot.val() != null) {
-          return snapshot.val();
+      var colors = snapshot.val()
+      var color_values = {}
+      if (colors != null) {
+          Object.keys(colors).forEach((color) => {
+            color_values[color] = colors[color].color
+          });
       }
+      console.log(color_values)
+      return color_values
   });
   return bgObj;
 }
@@ -202,11 +207,9 @@ class DogEdit extends React.Component {
         eOptions.push({[i]: emotions[i]['name']});
       }
     }
-    this.setState({
-      options: {
-        emotionOptions: eOptions
-      }
-    });
+    var stateCopy = this.state
+    stateCopy.options.emotionOptions = eOptions
+    this.setState(stateCopy);
     this.updateEyes();
     this.updateFurs();
   }
@@ -218,11 +221,9 @@ class DogEdit extends React.Component {
         eOptions.push({i: eyes[i]['name']});
       }
     }
-    this.setState({
-      options: {
-        eyesOptions: eOptions
-      }
-    });
+    var stateCopy = this.state
+    stateCopy.options.eyesOptions = eOptions
+    this.setState(stateCopy);
   }
   updateFurs(){ //Updates furs with correct emotion id 
     var fOptions = [], fValue;
@@ -232,28 +233,26 @@ class DogEdit extends React.Component {
         fOptions.push({i: furs[i]['name']});
       }
     }
-    this.setState({
-      options: {
-        furOptions: fOptions
-      }
-    });
+    var stateCopy = this.state
+    stateCopy.options.furOptions = fOptions
+    this.setState(stateCopy);
   }
 
   async updateCanvas() { 
     var c=document.getElementById("dogEditCanvas");
     var ctx=c.getContext("2d");
-    ctx.fillStyle = this.state.values.backgroundValue.color;
+    ctx.fillStyle = this.state.values.backgroundValue.hex;
     ctx.fillRect(0, 0, c.width, c.height);
     var furImage = new Image();
     var eyesImage = new Image();
     var emotionImage = new Image();
-    emotionImage.src = await getImageUrl(this.state.values.emotionValue['file']);
+    getImageUrl(this.state.values.emotionValue['file']).then( url => { emotionImage.src = url })
     emotionImage.onload = async () => {
       ctx.drawImage(emotionImage, 0, 0, emotionImage.width, emotionImage.height, 0, 0, c.width, c.height); //image, x, y, width, height
-      eyesImage.src = await getImageUrl(this.state.values.eyeValue['file']);
+      getImageUrl(this.state.values.eyeValue['file']).then( url => {eyesImage.src = url })
       eyesImage.onload = async () => {
           ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
-          furImage.src = await getImageUrl(this.state.values.furValue['file']);
+          getImageUrl(this.state.values.furValue['file']).then( url => { furImage.src = url})
           furImage.onload = async () => {
             ctx.drawImage(furImage, 0, 0, c.width, c.height);
             c.toBlob((blob) => {
@@ -331,10 +330,10 @@ class DogEdit extends React.Component {
   }
 
   render() {
-    
+    console.log(this.state.options)
     return (
       <div className="dogEditWindow">
-        <div className="dogPreview" style={{backgroundColor: this.state.values.backgroundValue}}>
+        <div className="dogPreview" style={{backgroundColor: this.state.values.backgroundValue.hex}}>
           <canvas className="dogPreviewAvatarImageStyle" id="dogEditCanvas"/>
         </div>
         <div className="dogOptionsSelect">
