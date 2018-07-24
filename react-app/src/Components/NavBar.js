@@ -49,16 +49,22 @@ class NavBar extends React.Component {
     this.handleLink = this.handleLink.bind(this);
     this.signOut = this.signOut.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
+    this.goToPage = this.goToPage.bind(this);
   }
 
   handleToggle = () => this.setState({open: !this.state.open});
+  
+  goToPage(page) {
+    this.props.history.push(page)
+  }
+  
   handleLink(e) {
     e.preventDefault();
     if(e.target.innerText == "Login"){
-      this.props.history.push('/');
+      this.goToPage('/');
     }
     else{
-      this.props.history.push('/' + e.target.innerText.replace(new RegExp(" ", "g"), ""));
+      this.goToPage('/' + e.target.innerText.replace(new RegExp(" ", "g"), ""));
     }
   }
   
@@ -89,7 +95,7 @@ class NavBar extends React.Component {
 		  <span style = {TitleColor2}>Bark </span>
         </div>
         <FlatButton 
-          onClick={this.props.handleDrawerToggle} 
+          onClick={() => {this.goToPage('Profile')}} 
           style={NavBarButtonStyle} 
           icon={ <Person color={navButtonColor}/>}/>
 		  <div backgroundColor = "#000">
