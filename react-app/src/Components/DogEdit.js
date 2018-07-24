@@ -23,17 +23,18 @@ function updateUserAvatar(userId, avatar){ //Updates avatar in database, avatar 
   var dbRef = firebase.database().ref();
   dbRef.child('users/' + userId).update({
       dog: {
-          breed: avatar.breedValue.name,
+          breed: avatar.breedValue.id,
           color: avatar.backgroundValue.color,
-          emotion: avatar.emotionValue.name,
-          eye: avatar.eyeValue.name,
-          fur: avatar.furValue.name,
+          emotion: avatar.emotionValue.id,
+          eye: avatar.eyeValue.id,
+          fur: avatar.furValue.id,
           name: "Doggy"
       }
   });
 }
 function uploadUserAvatar(userId, blob){ //Upload user avatar in storage
-  var uploadTask = firebase.storage().ref().child('/UserProfiles/' + userId + '/profile.jpg').put(blob);
+  console.log(blob)
+  var uploadTask = firebase.storage().ref().child('/UserProfiles/' + userId + '/profile.png').put(blob);
 }
 
 function getImageUrl(location){
@@ -86,8 +87,7 @@ class DogEdit extends React.Component {
         eyeOptions: [{id: ""}],
         furOptions: [{id: ""}],
         emotionOptions: [{id: ""}],
-      },
-      userBlob: ""
+      }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.updateBreed = this.updateBreed.bind(this);
@@ -246,19 +246,19 @@ class DogEdit extends React.Component {
     };
     eyesImage.onload = () => {
       console.log("eye is loaded");
-        ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
+      ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
     };
     furImage.onload = () => {
       console.log("fur is loaded");
       ctx.drawImage(furImage, 0, 0, c.width, c.height);
     };
+    emotionImage.crossOrigin = "anonymous";
+    eyesImage.crossOrigin = "anonymous";
+    furImage.crossOrigin = "anonymous";
     furProm.then( url => { furImage.src = url; console.log(url) })
     eyeProm.then( url => {eyesImage.src = url; console.log(url) })
     emotionProm.then( url => { emotionImage.src = url; console.log(url) })
-    Promise.all([eyeProm, emotionProm, furProm]).then( (values) => {      
-      /*c.toBlob((blob) => {
-        this.setState({userBlob: blob});
-      }, 'image/jpeg', 0.95);*/
+    Promise.all([eyeProm, emotionProm, furProm]).then( (values) => {
     }).catch((error) => console.log(error));
   };
 
@@ -304,7 +304,13 @@ class DogEdit extends React.Component {
 
   handleSubmit() {
     updateUserAvatar(this.props.userId, this.state.values); //Update avatar attributes with text values
-    uploadUserAvatar(this.props.userId, this.state.userBlob); //Upload full avatar image
+          
+    document.getElementById("dogEditCanvas").toBlob((blob) => {
+      this.userBlob = blob;
+      var image = new Image()
+      image.src = blob
+      uploadUserAvatar(this.props.userId, this.userBlob); //Upload full avatar image
+    });
   }
 
   render() {

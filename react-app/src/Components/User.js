@@ -11,7 +11,7 @@ export function getUserDogProfileURL(userId) {
     return new Promise((resolve, reject) => {resolve(foundUIDs[userId])})
   }
   var root = firebase.storage().ref()
-  var userImage = root.child("UserProfiles").child(userId).child("profile.jpg")
+  var userImage = root.child("UserProfiles").child(userId).child("profile.png")
   
   var failed = false
   return new Promise((resolve, reject) => {

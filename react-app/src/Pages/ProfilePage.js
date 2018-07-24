@@ -20,6 +20,8 @@ import Dialog from '@material-ui/core/Dialog';
 import ContentCreate from 'material-ui/svg-icons/content/create.js';
 import DogEdit from '../Components/DogEdit.js';
 import { getUserInfo } from '../Fire.js';
+import { getUserDogProfileURL } from '../Components/User.js'
+import firebase from 'firebase';
 
 class ProfilePage extends React.Component {
     constructor(props){
@@ -40,6 +42,14 @@ class ProfilePage extends React.Component {
 
     componentDidMount() {
         this.displayUserInfo(this.props.userId);
+        getUserDogProfileURL(firebase.auth().currentUser.uid).then( url => {
+            this.setState({ 
+                user: {
+                    userName: this.state.user.userName,
+                    userAvatar: url, 
+                }
+            });
+        })
     }
     toggleDialog(){
         this.setState({
