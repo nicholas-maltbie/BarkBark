@@ -43,7 +43,7 @@ class ProfilePage extends React.Component {
 
     componentDidMount() {
         this.displayUserInfo(this.props.userId);
-        getUserDogProfileURL(firebase.auth().currentUser.uid).then( url => {
+        getUserDogProfileURL(firebase.auth().currentUser.uid, true).then( url => {
             this.setState({ 
                 user: {
                     userName: this.state.user.userName,
@@ -54,22 +54,22 @@ class ProfilePage extends React.Component {
         })
     }
     toggleDialog(){
-        console.log
+      getUserDogProfileURL(firebase.auth().currentUser.uid, true).then( url => {
+        this.setState({ 
+            user: {
+                userName: this.state.user.userName,
+                userAvatar: url, 
+                userBG: this.state.user.userBG
+            }
+        });
+      })
         this.setState({
             dialogToggle: !this.state.dialogToggle
         }, () => 
         {
+            
             if(!this.state.dialogToggle){
                 this.displayUserInfo(this.props.userId);
-                getUserDogProfileURL(firebase.auth().currentUser.uid).then( url => {
-                    this.setState({ 
-                        user: {
-                            userName: this.state.user.userName,
-                            userAvatar: url, 
-                            userBG: this.state.user.userBG
-                        }
-                    });
-                })
             }
         });
     }
@@ -87,6 +87,15 @@ class ProfilePage extends React.Component {
     }
     handleSubmit() {
         this.dogEditChild.current.handleSubmit();
+        getUserDogProfileURL(firebase.auth().currentUser.uid, true).then( url => {
+                this.setState({ 
+                    user: {
+                        userName: this.state.user.userName,
+                        userAvatar: url, 
+                        userBG: this.state.user.userBG
+                    }
+                });
+            })
     }
 
     render(){
@@ -111,7 +120,7 @@ class ProfilePage extends React.Component {
                         <DogEdit userId={this.props.userId} ref={this.dogEditChild}/>
                     </DialogContent>
                     <DialogActions style={{textAlign:'center'}}>
-                        <Button variant="contained" id="dogEditSubmit" className="dogEditButton" onClick={this.handleSubmit}> 
+                        <Button variant="contained" id="dogEditSubmit" className="dogEditButton" onClick={() =>{this.handleSubmit(); this.toggleDialog()} }> 
                             Submit
                         </Button>
                         <Button variant="contained" id="dogEditCancel" className="dogEditButton" onClick={this.toggleDialog}> 

@@ -6,8 +6,8 @@ const defaultDog = "Boxer_Full.png"
 var dogDownloadUrl = null
 const foundUIDs = {}
 
-export function getUserDogProfileURL(userId) {
-  if (userId in foundUIDs) {
+export function getUserDogProfileURL(userId, force=false) {
+  if (userId in foundUIDs && !force) {
     return new Promise((resolve, reject) => {resolve(foundUIDs[userId])})
   }
   var root = firebase.storage().ref()
