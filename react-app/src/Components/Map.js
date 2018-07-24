@@ -62,7 +62,7 @@ class Map extends Component {
         anchor: new google.maps.Point(100, 100),
         scaledSize: new google.maps.Size(200, 200)
       },
-      zIndex: 1,
+      zIndex: -1,
       opacity: 0.3
     })
     
@@ -130,8 +130,8 @@ class Map extends Component {
     this.setState({dialogOpen: newState});
   }
 
-  updateViewDialog(newState) {
-    this.setState({ViewDialogOpen: newState});
+  updateViewDialog(newState, barkId) {
+    this.setState({ViewDialogOpen: newState, barkId: barkId});
   }
 
   updateLocation(newPos) {
@@ -203,7 +203,7 @@ class Map extends Component {
     centerControlDiv.index = 1;
     testControlDiv.index = 1
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(barkControlDiv);
-    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(testControlDiv);
+    //this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(testControlDiv);
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
     
     getLocation().then(this.updateLocation)
@@ -228,7 +228,8 @@ class Map extends Component {
                     onYes = {() => {MakeFireBark(this.getCurrntLocation)}} 
                     onNo = {() => {}}/>
           <ViewBark open = {this.state.ViewDialogOpen}
-                    updateFn = {this.updateViewDialog}/>
+                    updateFn = {this.updateViewDialog}
+                    barkId = {this.state.barkId}/>
         </div>
         
         

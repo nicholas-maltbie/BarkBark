@@ -8,6 +8,7 @@ export function GetRegion(loc) {
 }
 
 const google = window.google;
+const marker_index = 10
 
 export function MakeFireBark(locFn) {
   var loc = locFn()
@@ -75,6 +76,7 @@ var addMarker = function(barkData, key) {
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(barkData.lat,barkData.lng),
       map: map,
+      zIndex: marker_index
     })
     drawn_barks[key] = marker
     bark_data[key] = barkData
@@ -87,10 +89,7 @@ var addMarker = function(barkData, key) {
       })
     })
     marker.addListener('click',function(){
-    //MarkerControl.addEventListener('click',function(){
-      //this.props.updateViewDialog;
-      updateViewDialog(true);
-      console.log("help me");
+      updateViewDialog(true, key);
     });
     }
 
@@ -124,8 +123,8 @@ export function closeBarkListener() {
   drawn_barks = {}
 }
 
-export function setupBarkListener(mapThingy, locationThingy,addMarker) {
-  updateViewDialog = addMarker
+export function setupBarkListener(mapThingy, locationThingy,viewDialogFn) {
+  updateViewDialog = viewDialogFn
   map = mapThingy
   getLocationFn = locationThingy
   root.child('read_time').once('value').then(
