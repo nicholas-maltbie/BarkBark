@@ -3,7 +3,7 @@ import firebase from 'firebase'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MakeBark from '../Components/MakeBark.js';
-
+import ViewBark from '../Components/ViewBark.js';
 import { CenterControl, TestButton, BarkControl } from "./Controls.js"
 import { getUserDogProfileURL } from './User.js';
 import { MakeFireBark, setupBarkListener, closeBarkListener } from './bark.js';
@@ -111,6 +111,8 @@ class Map extends Component {
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
     this.getCurrntLocation = this.getCurrntLocation.bind(this);
+    this.updateViewDialog = this.updateViewDialog.bind(this);
+    
     
     getUserDogProfileURL(firebase.auth().currentUser.uid).then(
       (imageURL) => {
@@ -127,7 +129,11 @@ class Map extends Component {
   updateBarkDialog(newState) {
     this.setState({dialogOpen: newState});
   }
-  
+
+  updateViewDialog(newState) {
+    this.setState({ViewDialogOpen: newState});
+  }
+
   updateLocation(newPos) {
     if (rejected) {
       clearInterval(this.updateLocationTaskId)
@@ -182,6 +188,7 @@ class Map extends Component {
     var testControl = new TestButton(testControlDiv, this.map, 
       () => {
         // Put your code here for testing features
+        this.updateViewDialog(true)
         console.log('test_feature')
       }
     )
@@ -209,7 +216,7 @@ class Map extends Component {
     }
     this.updateLocationTaskId = setInterval(updateLocationTask, 500)
     
-    setupBarkListener(this.map, this.getCurrntLocation)
+    setupBarkListener(this.map, this.getCurrntLocation,this.updateViewDialog)
   }
   
   render() {
@@ -220,6 +227,8 @@ class Map extends Component {
                     updateFn = {this.updateBarkDialog}
                     onYes = {() => {MakeFireBark(this.getCurrntLocation)}} 
                     onNo = {() => {}}/>
+          <ViewBark open = {this.state.ViewDialogOpen}
+                    updateFn = {this.updateViewDialog}/>
         </div>
         
         
