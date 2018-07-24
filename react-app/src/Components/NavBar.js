@@ -101,7 +101,6 @@ class NavBar extends React.Component {
 		  <div backgroundColor = "#000">
         <Drawer open={!this.props.drawerClose}>
           <MenuItem onClick={this.toggleDrawer(this.signOut)}>Sign Out</MenuItem>
-          <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Home</MenuItem>
           <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Map</MenuItem>
           <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Profile</MenuItem>
           <MenuItem onClick={this.toggleDrawer(this.handleLink)}>Help</MenuItem>

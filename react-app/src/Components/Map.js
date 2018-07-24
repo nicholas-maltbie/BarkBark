@@ -52,9 +52,41 @@ class Map extends Component {
         anchor: new google.maps.Point(32, 32),
         scaledSize: new google.maps.Size(65, 65)
       },
-      zIndex: 1,
-      map: this.map
+      zIndex: 2
     })
+    this.biggerCircle = new google.maps.Marker({
+      position: new google.maps.LatLng(0,0),
+      icon: {
+        url: "https://png.icons8.com/small/1600/filled-circle.png",
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(100, 100),
+        scaledSize: new google.maps.Size(200, 200)
+      },
+      zIndex: 1,
+      opacity: 0.3
+    })
+    
+    firebase.database().ref().child("users").child(firebase.auth().currentUser.uid).child("dog").child("color").once("value", (snapshot) => {
+      var color_id = snapshot.val()
+      firebase.database().ref().child("backgrounds").child(color_id).child("file").once("value", (snapshot) => {
+        var filepath = snapshot.val()
+        firebase.storage().ref(filepath).getDownloadURL().then((url) => {
+          this.userCircle.setIcon({
+            url: url,
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(32, 32),
+            scaledSize: new google.maps.Size(64, 64)
+          })
+          this.biggerCircle.setIcon({
+            url: url,
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(100, 100),
+            scaledSize: new google.maps.Size(200, 200)
+          })
+        })
+      })
+    })
+    
     this.userIcon = {
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(24, 24),
@@ -64,7 +96,7 @@ class Map extends Component {
       position: new google.maps.LatLng(0,0),
       icon: this.userIcon,
       map: this.map,
-      zIndex: 2,
+      zIndex: 3,
     })
     this.state ={
       dialogOpen: false,
@@ -75,6 +107,7 @@ class Map extends Component {
     this.updateDogLocation = () => {
       this.userCircle.setPosition(this.userLocation)
       this.userMarker.setPosition(this.userLocation)
+      this.biggerCircle.setPosition(this.userLocation)
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
     this.getCurrntLocation = this.getCurrntLocation.bind(this);
@@ -143,6 +176,7 @@ class Map extends Component {
     });
     
     this.userMarker.setMap(this.map)
+    this.biggerCircle.setMap(this.map)
     this.userCircle.setMap(this.map)
     
     var centerControlDiv = document.createElement('div');
