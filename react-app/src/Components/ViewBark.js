@@ -18,20 +18,22 @@ class ViewBark extends React.Component{
       open: false,
       updateFn: props.updateFn,
       CoolEmojiURL: '',
-      CoolEmojiNum: 0,
+      cool: 0,
       DroolEmojiURL: '',
-      DroolEmojiNum: 0,
+      drool: 0,
       HappyEmojiURL: '',
-      HappyEmojiNum: 0,
+      happy: 0,
       LoveEmojiURL: '',
-      LoveEmojiNum: 0,
+      love: 0,
       NormalEmojiURL: '',
-      NormalEmojiNum: 0,
+      normal: 0,
       SadEmojiURL: '',
-      SadEmojiNum: 0,
+      sad: 0,
       CanReact: true
     }
+    this.savedReactions = {}
     this.last_bark_id = null
+    this.UserID = null
     //this.handleClickOpen=this.handleClickOpen.bind(this);
     //this.handleClose=this.handleClose.bind(this);
     this.getImageUrl = this.getImageUrl.bind(this);
@@ -46,6 +48,8 @@ class ViewBark extends React.Component{
  
   async componentDidMount(){
     this.renderPicture();
+    this.updateListener(this.props.barkId)
+
   }
   
   
@@ -55,6 +59,7 @@ class ViewBark extends React.Component{
   
   handleClickOpen = () => {
     this.props.updateFn(true)
+    console.log("TEST")
   };
 
   handleClose = (other_fn) => {
@@ -67,86 +72,70 @@ class ViewBark extends React.Component{
   }
 
   CoolClicked = () =>{
-    if(this.state.CanReact == true){
-      var temp = this.state.CoolEmojiNum;
-      temp = temp + 1;
+    //if(this.state.CanReact == true){
+      //var temp = this.state.CoolEmojiNum;
+      //temp = temp + 1;
       // NOTE, THIS WILL RESET THE OTHER COUNTS
-      this.setState({CoolEmojiNum:temp});
-    }
-    this.ToogleCanReact();
+      //this.setState({CoolEmojiNum:temp});
+    //}
+    //this.ToogleCanReact();
+    firebase.database().ref('bark_reactions/' + this.props.barkId + '/' + firebase.auth().currentUser.uid).set('cool')
 
   }
 
   DroolClicked = () =>{
-    if(this.state.CanReact == true){
-      var temp = this.state.DroolEmojiNum;
-      temp = temp + 1;
-      // NOTE, THIS WILL RESET THE OTHER COUNTS
-      this.setState({DroolEmojiNum:temp});
-    }
-    this.ToogleCanReact();
-    
+    firebase.database().ref('bark_reactions/' + this.props.barkId + '/' + firebase.auth().currentUser.uid).set('drool')
   }
 
   HappyClicked = () =>{
-    if(this.state.CanReact == true){
-      var temp = this.state.HappyEmojiNum;
-      temp = temp + 1;
-      // NOTE, THIS WILL RESET THE OTHER COUNTS
-      this.setState({HappyEmojiNum:temp});
-    }
-    this.ToogleCanReact();
-    
+    firebase.database().ref('bark_reactions/' + this.props.barkId + '/' + firebase.auth().currentUser.uid).set('happy')  
   }
 
   LoveClicked = () =>{
-    if(this.state.CanReact == true){
-      var temp = this.state.LoveEmojiNum;
-      temp = temp + 1;
-      // NOTE, THIS WILL RESET THE OTHER COUNTS
-      this.setState({LoveEmojiNum:temp});
-    }
-    this.ToogleCanReact();
-    
+    firebase.database().ref('bark_reactions/' + this.props.barkId + '/' + firebase.auth().currentUser.uid).set('love')  
   }
 
   NormalClicked = () =>{
-    if(this.state.CanReact == true){
-      var temp = this.state.NormalEmojiNum;
-      temp = temp + 1;
-      // NOTE, THIS WILL RESET THE OTHER COUNTS
-      this.setState({NormalEmojiNum:temp});
-    }
-    this.ToogleCanReact();
-    
+    firebase.database().ref('bark_reactions/' + this.props.barkId + '/' + firebase.auth().currentUser.uid).set('normal')
   }
 
   SadClicked = () =>{
-    if(this.state.CanReact == true){
-      var temp = this.state.SadEmojiNum;
-      temp = temp + 1;
-      this.setState({SadEmojiNum:temp});
-    }
-    this.ToogleCanReact();
-    
+    firebase.database().ref('bark_reactions/' + this.props.barkId + '/' + firebase.auth().currentUser.uid).set('sad')
   }
   
   updateBarkCountsOnAdd(dataAdded) {
-    // UPDATE BARK COUNTS @BLAKE
+    // UPDATE BARK COUNTS @BLAKE)
+    //console.log(dataAdded.key)
+    //console.log(dataAdded.val())
+    var stateCopy = this.state
+    stateCopy[dataAdded.val()] += 1
+
+    this.savedBarks[dataAdded.key] = dataAdded.val()
+    this.setState(stateCopy)
   }
   
   updateBarkCountsOnChange(dataChanged) {
     // UPDATE BARK COUNTS @BLAKE
-    
+    //console.log(dataChanged.key)
+    //console.log(dataChanged.val())
+    var stateCopy = this.state
+    stateCopy[this.savedBarks[dataChanged.key]] -= 1
+    stateCopy[dataChanged.val()] += 1
+    this.savedBarks[dataChanged.key] = dataChanged.val()
+    this.setState(stateCopy)
   }
     
   updateListener(barkId) {
+    console.log(barkId)
     if (this.last_bark_id != barkId) {
       var root = firebase.database().ref()
       if (this.last_bark_id != null) {
         root.child("bark_reactions").child(this.last_bark_id).off('child_added', this.updateBarkCountsOnAdd)
         root.child("bark_reactions").child(this.last_bark_id).off('child_changed', this.updateBarkCountsOnChange)
         // reset bark counts next
+        this.savedReactions = {}
+        //reset counds to zero
+
       }
       if (barkId != null) {
         root.child("bark_reactions").child(barkId).on('child_added', this.updateBarkCountsOnAdd)
@@ -203,6 +192,11 @@ class ViewBark extends React.Component{
     var source = await this.getImageUrl(emojis['sad']);
     this.setState({SadEmojiURL: source});
   }
+
+  SetUserID(){
+    var ID =  firebase.auth().currentUser.uid
+    this.setState({UserID: ID})
+  }
       
   render() {
     this.updateListener(this.props.barkId)
@@ -220,30 +214,30 @@ class ViewBark extends React.Component{
               Close<br/>Bark
             </Button>
             <div>
-            <div>  
-              <Button><img src = {this.state.CoolEmojiURL} alt ="Cool dog" width = "75" height ="75" onClick={this.CoolClicked}/></Button>
-              :{this.state.CoolEmojiNum}
-            </div>
+              <div>  
+                <Button><img src = {this.state.CoolEmojiURL} alt ="Cool dog" width = "75" height ="75" onClick={this.CoolClicked}/></Button>
+                :{this.state.cool}
+              </div>
               <div>
                 <Button><img src = {this.state.DroolEmojiURL} alt ="Drool dog" width = "75" height ="75" onClick ={this.DroolClicked}/></Button>
-                :{this.state.DroolEmojiNum}
+                :{this.state.drool}
               </div>
-                <div>
-                  <Button><img src = {this.state.HappyEmojiURL} alt = "Happy dog" width = "75" height = "75" onClick = {this.HappyClicked}/></Button>
-                  :{this.state.HappyEmojiNum}
-                </div>
-                  <div>
-                    <Button><img src = {this.state.LoveEmojiURL} alt = "Love dog" width = "75" height = "75" onClick = {this.LoveClicked}/></Button>
-                    :{this.state.LoveEmojiNum}
-                  </div>
-                    <div>
-                      <Button><img src = {this.state.NormalEmojiURL} alt = "Normal dog" width = "75" height = "75" onClick ={this.NormalClicked}/></Button>
-                      :{this.state.NormalEmojiNum}
-                    </div>
-                      <div>
-                        <Button><img src = {this.state.SadEmojiURL} alt = "Sad dog" width = "75" height = "75" onClick = {this.SadClicked}/></Button>
-                        :{this.state.SadEmojiNum}
-                      </div>                        
+              <div>
+                <Button><img src = {this.state.HappyEmojiURL} alt = "Happy dog" width = "75" height = "75" onClick = {this.HappyClicked}/></Button>
+                :{this.state.happy}
+              </div>
+              <div>
+                <Button><img src = {this.state.LoveEmojiURL} alt = "Love dog" width = "75" height = "75" onClick = {this.LoveClicked}/></Button>
+                :{this.state.love}
+              </div>
+              <div>
+                <Button><img src = {this.state.NormalEmojiURL} alt = "Normal dog" width = "75" height = "75" onClick ={this.NormalClicked}/></Button>
+                :{this.state.normal}
+              </div>
+              <div>
+                <Button><img src = {this.state.SadEmojiURL} alt = "Sad dog" width = "75" height = "75" onClick = {this.SadClicked}/></Button>
+                :{this.state.sad}
+            </div>                        
             </div>
           </DialogActions>
         </Dialog>
