@@ -81,6 +81,8 @@
 .dogEditDialog {
   background: linear-gradient(#e8e7e7, #dcdfff);
 }
+
+
 .dogEditWindow {
   display:flex;
   flex-direction:column;
@@ -89,9 +91,16 @@
   height:100%;
 }
 .dogPreview {
-  width:100%;
+  width:512px;
   height:512px;
 }
+@media screen and (max-width: 600px) {
+  .dogPreview {
+    width:256px;
+    height:256px;
+  }
+}
+
 .dogOptionsSelect {
   display: flex;
   flex-direction: column;
@@ -102,7 +111,6 @@
 }
 .dogOptionSelectTab {
   margin-top: 10px;
-  font-color: black;
   margin-bottom: 10px;
 }
 
