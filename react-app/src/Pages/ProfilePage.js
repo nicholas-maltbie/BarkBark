@@ -32,7 +32,8 @@ class ProfilePage extends React.Component {
             dialogToggle: false,
             user: {
                 userName: "",
-                userAvatar: "",  
+                userAvatar: "", 
+                userBG: "" 
             }
         }
         this.toggleDialog = this.toggleDialog.bind(this);
@@ -47,13 +48,20 @@ class ProfilePage extends React.Component {
                 user: {
                     userName: this.state.user.userName,
                     userAvatar: url, 
+                    userBG: this.state.user.userBG
                 }
             });
         })
     }
     toggleDialog(){
+        console.log
         this.setState({
             dialogToggle: !this.state.dialogToggle
+        }, () => 
+        {
+            if(!this.state.dialogToggle){
+                this.displayUserInfo(this.props.userId);
+            }
         });
     }
     displayUserInfo(userId){
@@ -62,7 +70,8 @@ class ProfilePage extends React.Component {
             this.setState({ 
                 user: {
                     userName: user.val().username,
-                    userAvatar: "", 
+                    userAvatar: this.state.user.userAvatar, 
+                    userBG: user.val().dog.color
                 }
             });
         });
@@ -75,7 +84,7 @@ class ProfilePage extends React.Component {
         return(
             <div className="Page" id="ProfilePageScreenStyle">
                 <Card className="ProfileHeaderStyle">
-                    <CardContent className="ProfileHeaderAvatarStyle" style={{backgroundColor: this.state.userBG}}>
+                    <CardContent className="ProfileHeaderAvatarStyle" style={{backgroundColor: this.state.user.userBG}}>
                         <Button  className="ProfileEditAvatarButton" variant="fab" mini color="primary" aria-label="Edit" onClick={this.toggleDialog}>
                             <ContentCreate/>
                         </Button>
