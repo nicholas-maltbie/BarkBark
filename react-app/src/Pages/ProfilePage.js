@@ -39,6 +39,15 @@ class ProfilePage extends React.Component {
         this.toggleDialog = this.toggleDialog.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.dogEditChild = React.createRef();
+        this.getHexColor = this.getHexColor.bind(this);
+    }
+
+    getHexColor(){
+        var bgObj = firebase.database().ref('/backgrounds').once("value")
+        .then(function (snapshot) {
+            return snapshot.val();
+        });
+        return bgObj;
     }
 
     componentDidMount() {
@@ -67,7 +76,6 @@ class ProfilePage extends React.Component {
             dialogToggle: !this.state.dialogToggle
         }, () => 
         {
-            
             if(!this.state.dialogToggle){
                 this.displayUserInfo(this.props.userId);
             }
@@ -75,13 +83,18 @@ class ProfilePage extends React.Component {
     }
     displayUserInfo(userId){
         var userInfo = getUserInfo(userId);
+        var bgProm = this.getHexColor();
+        var hexValue;
         userInfo.then((user) => {
-            this.setState({ 
-                user: {
-                    userName: user.val().username,
-                    userAvatar: this.state.user.userAvatar, 
-                    userBG: user.val().dog.color
-                }
+            bgProm.then((value) => {
+                hexValue = value[user.val().dog.color]['color']; 
+                this.setState({ 
+                    user: {
+                        userName: user.val().username,
+                        userAvatar: this.state.user.userAvatar, 
+                        userBG: hexValue
+                    }
+                });
             });
         });
     }
