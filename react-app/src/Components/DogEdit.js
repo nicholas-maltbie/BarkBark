@@ -240,25 +240,26 @@ class DogEdit extends React.Component {
     var emotionProm = getImageUrl(this.state.values.emotionValue['file'])
     var eyeProm = getImageUrl(this.state.values.eyeValue['file'])
     var furProm = getImageUrl(this.state.values.furValue['file'])
+    emotionImage.onload = () => {
+      console.log("emotion is loaded");
+      ctx.drawImage(emotionImage, 0, 0, c.width, c.height); //image, x, y, width, height
+    };
+    eyesImage.onload = () => {
+      console.log("eye is loaded");
+        ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
+    };
+    furImage.onload = () => {
+      console.log("fur is loaded");
+      ctx.drawImage(furImage, 0, 0, c.width, c.height);
+    };
     furProm.then( url => { furImage.src = url; console.log(url) })
     eyeProm.then( url => {eyesImage.src = url; console.log(url) })
     emotionProm.then( url => { emotionImage.src = url; console.log(url) })
-    Promise.all([eyeProm, emotionProm, furProm]).then( (values) => {
-      emotionImage.onload = () => {
-        ctx.drawImage(emotionImage, 0, 0, c.width, c.height); //image, x, y, width, height
-        eyesImage.onload = () => {
-          console.log("eye is loaded");
-            ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
-            furImage.onload = () => {
-              console.log("fur is loaded");
-              ctx.drawImage(furImage, 0, 0, c.width, c.height);
-              /*c.toBlob((blob) => {
-                this.setState({userBlob: blob});
-              }, 'image/jpeg', 0.95);*/
-            };
-        }; 
-      }
-    });
+    Promise.all([eyeProm, emotionProm, furProm]).then( (values) => {      
+      /*c.toBlob((blob) => {
+        this.setState({userBlob: blob});
+      }, 'image/jpeg', 0.95);*/
+    }).catch((error) => console.log(error));
   };
 
   loadOptions(options, type) { //Return tabs for background and breed
