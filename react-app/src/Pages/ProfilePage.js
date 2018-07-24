@@ -61,6 +61,15 @@ class ProfilePage extends React.Component {
         {
             if(!this.state.dialogToggle){
                 this.displayUserInfo(this.props.userId);
+                getUserDogProfileURL(firebase.auth().currentUser.uid).then( url => {
+                    this.setState({ 
+                        user: {
+                            userName: this.state.user.userName,
+                            userAvatar: url, 
+                            userBG: this.state.user.userBG
+                        }
+                    });
+                })
             }
         });
     }
