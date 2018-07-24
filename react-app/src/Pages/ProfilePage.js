@@ -48,11 +48,13 @@ class ProfilePage extends React.Component {
     }
     displayUserInfo(userId){
         var userInfo = getUserInfo(userId);
-        this.setState({ 
-            user: {
-                userName: userInfo.username,
-                userAvatar: "", 
-            }
+        userInfo.then((user) => {
+            this.setState({ 
+                user: {
+                    userName: user.val().username,
+                    userAvatar: "", 
+                }
+            });
         });
     }
     handleSubmit() {
@@ -71,7 +73,7 @@ class ProfilePage extends React.Component {
                     </CardContent>
                     <CardContent>
                         <Typography variant="headline" component="h2">
-                            UserName {this.state.user.userName}
+                            {this.state.user.userName}
                         </Typography>
                     </CardContent>
                 </Card>

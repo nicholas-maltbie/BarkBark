@@ -47,11 +47,11 @@ function getBackgroundColors() { //Get background color object
       var colors = snapshot.val()
       var color_values = {}
       if (colors != null) {
-          Object.keys(colors).forEach((color) => {
-            color_values[color] = colors[color].color
+          Object.keys(colors).forEach((color) => { 
+            color_values[color] = colors[color].color;
           });
       }
-      return color_values
+      return color_values;
   });
   return bgObj;
 }
@@ -92,8 +92,7 @@ class DogEdit extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.updateBreed = this.updateBreed.bind(this);
     this.updateEmotion = this.updateEmotion.bind(this);
-    this.updateEyes = this.updateEyes.bind(this);
-    this.updateFurs = this.updateFurs.bind(this);
+    this.updateEyesAndFur = this.updateEyesAndFur.bind(this);
     this.updateCanvas = this.updateCanvas.bind(this);
   }
 
@@ -111,7 +110,6 @@ class DogEdit extends React.Component {
     fInfo.then( furs => {this.furs = furs.val()})
     bgInfo.then( bgs => {this.bgs = bgs} );
     Promise.all([uInfo, bInfo, emInfo, eyInfo, fInfo, bgInfo]).then( (vals) => {
-      console.log(this.userInfo)
       var count = 0;
       var bOptions = [], bValue = {};
       var emOptions = [], emValue = {};
@@ -134,7 +132,6 @@ class DogEdit extends React.Component {
         }
         count++;
       }
-      console.log(bValue)
       count = 0;
       for(var i in this.emotions){
         if(this.emotions[i]['breed_id'] == bValue.id){
@@ -145,7 +142,6 @@ class DogEdit extends React.Component {
         }
         count++;
       }
-      console.log(emValue)
       count = 0;
       for(var i in this.eyes){
         if(this.eyes[i]['emotion_id'] == emValue.id){
@@ -188,45 +184,45 @@ class DogEdit extends React.Component {
   };
 
   updateBreed(){ //Change resulting emotion, eyes, fur based on breed
-    this.updateEmotion();
+    this.updateEmotion(true);
   }
-  updateEmotion(){
-    var eOptions = [], eValue;
-    var emotions = this.emotions;
-    for(var i in emotions){
-      if(emotions[i]['breed_id'] == this.state.values.breedValue['id']){
-        eOptions.push({[i]: emotions[i]['name']});
+  updateEmotion(newBreed){
+    var stateCopy = this.state;
+    if(newBreed == true){
+      var eOptions = [], eValue;
+      var emotions = this.emotions;
+      for(var i in emotions){
+        if(emotions[i]['breed_id'] == this.state.values.breedValue['id']){
+          eOptions.push({[i]: emotions[i]['name']});
+        }
       }
+      var stateCopy = this.state;
+      stateCopy.options.emotionOptions = eOptions;
+      stateCopy.values.emotionValue = {id: Object.keys(this.state.options.emotionOptions[0])[0], name: Object.values(this.state.options.emotionOptions[0])[0], file: this.emotions[Object.keys(this.state.options.emotionOptions[0])[0]]['file'], index: 0};
     }
-    var stateCopy = this.state
-    stateCopy.options.emotionOptions = eOptions
-    this.setState(stateCopy);
-    this.updateEyes();
-    this.updateFurs();
+    this.setState(stateCopy, () => { this.updateEyesAndFur(); });
   }
-  updateEyes(){ //Updates eyes with correct emotion id 
+  updateEyesAndFur(){ //Updates eyes with correct emotion id 
+    var stateCopy = this.state;
     var eOptions = [], eValue;
     var eyes = this.eyes;
     for(var i in eyes){
       if(eyes[i]['emotion_id'] == this.state.values.emotionValue['id']){
-        eOptions.push({i: eyes[i]['name']});
+        eOptions.push({[i]: eyes[i]['name']});
       }
-    }
-    var stateCopy = this.state
-    stateCopy.options.eyeOptions = eOptions
-    this.setState(stateCopy);
-  }
-  updateFurs(){ //Updates furs with correct emotion id 
+    } 
     var fOptions = [], fValue;
     var furs = this.furs;
     for(var i in furs){
       if(furs[i]['emotion_id'] == this.state.values.emotionValue['id']){
-        fOptions.push({i: furs[i]['name']});
+        fOptions.push({[i]: furs[i]['name']});
       }
     }
-    var stateCopy = this.state
-    stateCopy.options.furOptions = fOptions
-    this.setState(stateCopy);
+    stateCopy.options.furOptions = fOptions;
+    stateCopy.values.furValue = {id: Object.keys(this.state.options.furOptions[0])[0], name: Object.values(this.state.options.furOptions[0])[0], file: this.furs[Object.keys(this.state.options.furOptions[0])[0]]['file'], index: 0};
+    stateCopy.options.eyeOptions = eOptions;
+    stateCopy.values.eyeValue = {id: Object.keys(this.state.options.eyeOptions[0])[0], name: Object.values(this.state.options.eyeOptions[0])[0], file: this.eyes[Object.keys(this.state.options.eyeOptions[0])[0]]['file'], index: 0};
+    this.setState(stateCopy, () => this.updateCanvas());
   }
 
   async updateCanvas() { 
@@ -237,6 +233,7 @@ class DogEdit extends React.Component {
     var furImage = new Image();
     var eyesImage = new Image();
     var emotionImage = new Image();
+    console.log(this.state);
     console.log(this.state.values.emotionValue['file'])
     console.log(this.state.values.eyeValue['file'])
     console.log(this.state.values.furValue['file'])
@@ -247,18 +244,22 @@ class DogEdit extends React.Component {
     eyeProm.then( url => {eyesImage.src = url; console.log(url) })
     emotionProm.then( url => { emotionImage.src = url; console.log(url) })
     Promise.all([eyeProm, emotionProm, furProm]).then( (values) => {
-      ctx.drawImage(emotionImage, 0, 0, emotionImage.width, emotionImage.height, 0, 0, c.width, c.height); //image, x, y, width, height
-      eyesImage.onload = async () => {
-          ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
-          furImage.onload = async () => {
-            ctx.drawImage(furImage, 0, 0, c.width, c.height);
-            c.toBlob((blob) => {
-              this.setState({userBlob: blob});
-            }, 'image/png', 0.95);
-          };
-        };
-      });
-    };
+      emotionImage.onload = () => {
+        ctx.drawImage(emotionImage, 0, 0, c.width, c.height); //image, x, y, width, height
+        eyesImage.onload = () => {
+          console.log("eye is loaded");
+            ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
+            furImage.onload = () => {
+              console.log("fur is loaded");
+              ctx.drawImage(furImage, 0, 0, c.width, c.height);
+              /*c.toBlob((blob) => {
+                this.setState({userBlob: blob});
+              }, 'image/jpeg', 0.95);*/
+            };
+        }; 
+      }
+    });
+  };
 
   loadOptions(options, type) { //Return tabs for background and breed
     var tabOptions;
@@ -277,47 +278,26 @@ class DogEdit extends React.Component {
   }
   
   handleChange = (event, value, selector) => { //value is returned index of tab option
+    var stateCopy = this.state;
     if(selector == 'bgcolor'){
-      this.setState( prevState => ({ 
-        values:{ 
-          ...prevState.values,
-          backgroundValue: {color: Object.keys(this.state.options.backgroundColorOptions[value])[0], hex: Object.values(this.state.options.backgroundColorOptions[value])[0], index: value} 
-        } 
-      }), () => this.updateCanvas());
+      stateCopy.values.backgroundValue = {color: Object.keys(this.state.options.backgroundColorOptions[value])[0], hex: Object.values(this.state.options.backgroundColorOptions[value])[0], index: value};
+      this.setState(stateCopy, () => this.updateCanvas());
     }
     else if(selector == 'fur'){
-      this.setState( prevState => ({ 
-        values:{ 
-          ...prevState.values,
-          furValue: {id: Object.keys(this.state.options.furOptions[value])[0], name: this.state.options.furOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.furOptions[value])[0]['file']], index: value} 
-        }
-      }), () => this.updateCanvas());
+      stateCopy.values.furValue = {id: Object.keys(this.state.options.furOptions[value])[0], name: Object.values(this.state.options.furOptions[value])[0], file: this.furs[Object.keys(this.state.options.furOptions[value])[0]]['file'], index: value};
+      this.setState(stateCopy, () => this.updateCanvas());
     }
     else if(selector == 'emotion'){
-      this.setState( prevState => ({ 
-        values:{ 
-          ...prevState.values,
-          emotionValue: {id: Object.keys(this.state.options.emotionOptions[value])[0], name: this.state.options.emotionOptions[value]['id'], file: getEmotions()[Object.keys(this.state.options.emotionOptions[value])[0]['file']], index: value} 
-        }
-      }), () => this.updateCanvas());
-      this.updateEmotion();
+      stateCopy.values.emotionValue = {id: Object.keys(this.state.options.emotionOptions[value])[0], name: Object.values(this.state.options.emotionOptions[value])[0], file: this.emotions[Object.keys(this.state.options.emotionOptions[value])[0]]['file'], index: value};
+      this.setState(stateCopy, () => { this.updateEmotion(false)});
     }
-    else if(selector == 'eye'){
-      this.setState(prevState => ({ 
-        values:{ 
-          ...prevState.values,
-          eyeValue: {id: Object.keys(this.state.options.eyeOptions[value])[0], name: this.state.options.eyeOptions[value]['id'], file: getEyes()[Object.keys(this.state.options.eyeOptions[value])[0]['file']], index: value} 
-        }
-      }), () => this.updateCanvas());
+    else if(selector == 'eyes'){
+      stateCopy.values.eyeValue = {id: Object.keys(this.state.options.eyeOptions[value])[0], name: Object.values(this.state.options.eyeOptions[value])[0], file: this.eyes[Object.keys(this.state.options.eyeOptions[value])[0]]['file'], index: value}; 
+      this.setState(stateCopy, () => this.updateCanvas());
     }
     else if(selector == 'breed'){
-      this.setState(prevState => ({ 
-        values:{ 
-          ...prevState.values,
-          breedValue: {id: Object.keys(this.state.options.breedOptions[value])[0], name: this.state.options.breedOptions[value]['id'], index: value} 
-        }
-      }), () => this.updateCanvas());
-      this.updateBreed();
+      stateCopy.values.breedValue = {id: Object.keys(this.state.options.breedOptions[value])[0], name: Object.values(this.state.options.breedOptions[value])[0], index: value}; 
+      this.setState(stateCopy, () => { this.updateBreed()});
     }
   };
 
@@ -327,7 +307,6 @@ class DogEdit extends React.Component {
   }
 
   render() {
-    console.log(this.state.options)
     return (
       <div className="dogEditWindow">
         <div className="dogPreview" style={{backgroundColor: this.state.values.backgroundValue.hex}}>
