@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from 'firebase';
+import ViewBark from '../Components/ViewBark.js'
 import { getUserDogProfileURL } from './User.js'
 
 export function GetRegion(loc) {
@@ -37,6 +38,7 @@ var readDelay = 0
 var update_task_id = null
 var getLocationFn = null
 var map = null
+var updateViewDialog = null
   
 var root = firebase.database().ref()
 
@@ -84,8 +86,16 @@ var addMarker = function(barkData, key) {
         scaledSize: new google.maps.Size(48, 48)
       })
     })
+    marker.addListener('click',function(){
+    //MarkerControl.addEventListener('click',function(){
+      //this.props.updateViewDialog;
+      updateViewDialog(true);
+      console.log("help me");
+    });
+    }
+
   }
-}
+
 
 var setupListener = function(new_region) {
   root.child('barks').child(new_region)
@@ -114,7 +124,8 @@ export function closeBarkListener() {
   drawn_barks = {}
 }
 
-export function setupBarkListener(mapThingy, locationThingy) {
+export function setupBarkListener(mapThingy, locationThingy,addMarker) {
+  updateViewDialog = addMarker
   map = mapThingy
   getLocationFn = locationThingy
   root.child('read_time').once('value').then(

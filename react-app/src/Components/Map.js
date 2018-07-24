@@ -3,7 +3,7 @@ import firebase from 'firebase'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MakeBark from '../Components/MakeBark.js';
-
+import ViewBark from '../Components/ViewBark.js';
 import { CenterControl, TestButton, BarkControl } from "./Controls.js"
 import { getUserDogProfileURL } from './User.js';
 import { MakeFireBark, setupBarkListener, closeBarkListener } from './bark.js';
@@ -52,9 +52,41 @@ class Map extends Component {
         anchor: new google.maps.Point(32, 32),
         scaledSize: new google.maps.Size(65, 65)
       },
-      zIndex: 1,
-      map: this.map
+      zIndex: 2
     })
+    this.biggerCircle = new google.maps.Marker({
+      position: new google.maps.LatLng(0,0),
+      icon: {
+        url: "https://png.icons8.com/small/1600/filled-circle.png",
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(100, 100),
+        scaledSize: new google.maps.Size(200, 200)
+      },
+      zIndex: 1,
+      opacity: 0.3
+    })
+    
+    firebase.database().ref().child("users").child(firebase.auth().currentUser.uid).child("dog").child("color").once("value", (snapshot) => {
+      var color_id = snapshot.val()
+      firebase.database().ref().child("backgrounds").child(color_id).child("file").once("value", (snapshot) => {
+        var filepath = snapshot.val()
+        firebase.storage().ref(filepath).getDownloadURL().then((url) => {
+          this.userCircle.setIcon({
+            url: url,
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(32, 32),
+            scaledSize: new google.maps.Size(64, 64)
+          })
+          this.biggerCircle.setIcon({
+            url: url,
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(100, 100),
+            scaledSize: new google.maps.Size(200, 200)
+          })
+        })
+      })
+    })
+    
     this.userIcon = {
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(24, 24),
@@ -64,7 +96,7 @@ class Map extends Component {
       position: new google.maps.LatLng(0,0),
       icon: this.userIcon,
       map: this.map,
-      zIndex: 2,
+      zIndex: 3,
     })
     this.state ={
       dialogOpen: false,
@@ -75,9 +107,12 @@ class Map extends Component {
     this.updateDogLocation = () => {
       this.userCircle.setPosition(this.userLocation)
       this.userMarker.setPosition(this.userLocation)
+      this.biggerCircle.setPosition(this.userLocation)
     }
     this.updateBarkDialog = this.updateBarkDialog.bind(this);
     this.getCurrntLocation = this.getCurrntLocation.bind(this);
+    this.updateViewDialog = this.updateViewDialog.bind(this);
+    
     
     getUserDogProfileURL(firebase.auth().currentUser.uid).then(
       (imageURL) => {
@@ -94,7 +129,11 @@ class Map extends Component {
   updateBarkDialog(newState) {
     this.setState({dialogOpen: newState});
   }
-  
+
+  updateViewDialog(newState) {
+    this.setState({ViewDialogOpen: newState});
+  }
+
   updateLocation(newPos) {
     if (rejected) {
       clearInterval(this.updateLocationTaskId)
@@ -137,6 +176,7 @@ class Map extends Component {
     });
     
     this.userMarker.setMap(this.map)
+    this.biggerCircle.setMap(this.map)
     this.userCircle.setMap(this.map)
     
     var centerControlDiv = document.createElement('div');
@@ -148,6 +188,7 @@ class Map extends Component {
     var testControl = new TestButton(testControlDiv, this.map, 
       () => {
         // Put your code here for testing features
+        this.updateViewDialog(true)
         console.log('test_feature')
       }
     )
@@ -175,7 +216,7 @@ class Map extends Component {
     }
     this.updateLocationTaskId = setInterval(updateLocationTask, 500)
     
-    setupBarkListener(this.map, this.getCurrntLocation)
+    setupBarkListener(this.map, this.getCurrntLocation,this.updateViewDialog)
   }
   
   render() {
@@ -186,6 +227,8 @@ class Map extends Component {
                     updateFn = {this.updateBarkDialog}
                     onYes = {() => {MakeFireBark(this.getCurrntLocation)}} 
                     onNo = {() => {}}/>
+          <ViewBark open = {this.state.ViewDialogOpen}
+                    updateFn = {this.updateViewDialog}/>
         </div>
         
         
