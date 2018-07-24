@@ -18,20 +18,22 @@ class ViewBark extends React.Component{
       open: false,
       updateFn: props.updateFn,
       CoolEmojiURL: '',
-      cool: 0,
       DroolEmojiURL: '',
-      drool: 0,
       HappyEmojiURL: '',
-      happy: 0,
       LoveEmojiURL: '',
-      love: 0,
       NormalEmojiURL: '',
-      normal: 0,
       SadEmojiURL: '',
-      sad: 0,
       CanReact: true
     }
-    this.savedReactions = {}
+    this.reactions = {
+      cool: 0,
+      happy: 0,
+      love: 0,
+      drool: 0,
+      normal: 0,
+      sad: 0,
+    }
+    this.savedBarks = {}
     this.last_bark_id = null
     this.UserID = null
     //this.handleClickOpen=this.handleClickOpen.bind(this);
@@ -107,22 +109,20 @@ class ViewBark extends React.Component{
     // UPDATE BARK COUNTS @BLAKE)
     //console.log(dataAdded.key)
     //console.log(dataAdded.val())
-    var stateCopy = this.state
-    stateCopy[dataAdded.val()] += 1
+    this.reactions[dataAdded.val()] += 1
 
     this.savedBarks[dataAdded.key] = dataAdded.val()
-    this.setState(stateCopy)
+    this.setState(this.state)
   }
   
   updateBarkCountsOnChange(dataChanged) {
     // UPDATE BARK COUNTS @BLAKE
     //console.log(dataChanged.key)
     //console.log(dataChanged.val())
-    var stateCopy = this.state
-    stateCopy[this.savedBarks[dataChanged.key]] -= 1
-    stateCopy[dataChanged.val()] += 1
+    this.reactions[this.savedBarks[dataChanged.key]] -= 1
+    this.reactions[dataChanged.val()] += 1
     this.savedBarks[dataChanged.key] = dataChanged.val()
-    this.setState(stateCopy)
+    this.setState(this.state)
   }
     
   updateListener(barkId) {
@@ -133,9 +133,15 @@ class ViewBark extends React.Component{
         root.child("bark_reactions").child(this.last_bark_id).off('child_added', this.updateBarkCountsOnAdd)
         root.child("bark_reactions").child(this.last_bark_id).off('child_changed', this.updateBarkCountsOnChange)
         // reset bark counts next
-        this.savedReactions = {}
-        //reset counds to zero
-
+        this.savedBarks = {}
+        this.reactions = {
+          cool: 0,
+          happy: 0,
+          love: 0,
+          drool: 0,
+          normal: 0,
+          sad: 0,
+        }
       }
       if (barkId != null) {
         root.child("bark_reactions").child(barkId).on('child_added', this.updateBarkCountsOnAdd)
@@ -216,27 +222,27 @@ class ViewBark extends React.Component{
             <div>
               <div>  
                 <Button><img src = {this.state.CoolEmojiURL} alt ="Cool dog" width = "75" height ="75" onClick={this.CoolClicked}/></Button>
-                :{this.state.cool}
+                :{this.reactions.cool}
               </div>
               <div>
                 <Button><img src = {this.state.DroolEmojiURL} alt ="Drool dog" width = "75" height ="75" onClick ={this.DroolClicked}/></Button>
-                :{this.state.drool}
+                :{this.reactions.drool}
               </div>
               <div>
                 <Button><img src = {this.state.HappyEmojiURL} alt = "Happy dog" width = "75" height = "75" onClick = {this.HappyClicked}/></Button>
-                :{this.state.happy}
+                :{this.reactions.happy}
               </div>
               <div>
                 <Button><img src = {this.state.LoveEmojiURL} alt = "Love dog" width = "75" height = "75" onClick = {this.LoveClicked}/></Button>
-                :{this.state.love}
+                :{this.reactions.love}
               </div>
               <div>
                 <Button><img src = {this.state.NormalEmojiURL} alt = "Normal dog" width = "75" height = "75" onClick ={this.NormalClicked}/></Button>
-                :{this.state.normal}
+                :{this.reactions.normal}
               </div>
               <div>
                 <Button><img src = {this.state.SadEmojiURL} alt = "Sad dog" width = "75" height = "75" onClick = {this.SadClicked}/></Button>
-                :{this.state.sad}
+                :{this.reactions.sad}
             </div>                        
             </div>
           </DialogActions>

@@ -34,6 +34,16 @@ function SignIn(props) {
         <img src="/static/media/logo.12a6f28b.png" className="App-logo" alt="logo"/>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+        <p>Sign in with a <span style={{color:'blue'}}
+            onmouseover="this.style.cursor='pointer'"
+            onmouseout="this.style.cursor='default'"
+            onClick={() => {
+              let provider = new firebase.auth.GoogleAuthProvider();
+              provider.setCustomParameters({
+                prompt: 'select_account'
+              });
+              firebase.auth().signInWithPopup(provider)
+            }}>different account</span>.</p>
         <p>By signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
       </div>
     )
