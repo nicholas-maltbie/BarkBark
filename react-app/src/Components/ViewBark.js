@@ -31,149 +31,188 @@ class ViewBark extends React.Component{
       SadEmojiNum: 0,
       CanReact: true
     }
+    this.last_bark_id = null
     //this.handleClickOpen=this.handleClickOpen.bind(this);
     //this.handleClose=this.handleClose.bind(this);
     this.getImageUrl = this.getImageUrl.bind(this);
     this.getEmojis = this.getEmojis.bind(this);
+    this.updateListener = this.updateListener.bind(this)
+    this.updateBarkCountsOnAdd = this.updateBarkCountsOnAdd.bind(this)
+    this.updateBarkCountsOnChange = this.updateBarkCountsOnChange.bind(this)
     //this.renderPicture = this.renderPicture(this);
     //this.getIconURL = this.getIconURL.bind(this);
     //this.getIconImages=this.getIconImages.bind(this);
   }
-   async componentDidMount(){
+ 
+  async componentDidMount(){
     this.renderPicture();
   }
   
-    handleClickOpen = () => {
-      this.props.updateFn(true)
-    };
   
-    handleClose = (other_fn) => {
-      this.props.updateFn(false)
-      //other_fn()
-    };
+  componentWillUnmount() {
+    this.updateListener(null)
+  }
+  
+  handleClickOpen = () => {
+    this.props.updateFn(true)
+  };
 
-    ToogleCanReact = () =>{
-      this.setState({CanReact:false});
+  handleClose = (other_fn) => {
+    this.props.updateFn(false)
+    //other_fn()
+  };
+
+  ToogleCanReact = () =>{
+    this.setState({CanReact:false});
+  }
+
+  CoolClicked = () =>{
+    if(this.state.CanReact == true){
+      var temp = this.state.CoolEmojiNum;
+      temp = temp + 1;
+      // NOTE, THIS WILL RESET THE OTHER COUNTS
+      this.setState({CoolEmojiNum:temp});
     }
+    this.ToogleCanReact();
 
-    CoolClicked = () =>{
-      if(this.state.CanReact == true){
-        var temp = this.state.CoolEmojiNum;
-        temp = temp + 1;
-        this.setState({CoolEmojiNum:temp});
-      }
-      this.ToogleCanReact();
+  }
 
+  DroolClicked = () =>{
+    if(this.state.CanReact == true){
+      var temp = this.state.DroolEmojiNum;
+      temp = temp + 1;
+      // NOTE, THIS WILL RESET THE OTHER COUNTS
+      this.setState({DroolEmojiNum:temp});
     }
+    this.ToogleCanReact();
+    
+  }
 
-    DroolClicked = () =>{
-      if(this.state.CanReact == true){
-        var temp = this.state.DroolEmojiNum;
-        temp = temp + 1;
-        this.setState({DroolEmojiNum:temp});
-      }
-      this.ToogleCanReact();
-      
+  HappyClicked = () =>{
+    if(this.state.CanReact == true){
+      var temp = this.state.HappyEmojiNum;
+      temp = temp + 1;
+      // NOTE, THIS WILL RESET THE OTHER COUNTS
+      this.setState({HappyEmojiNum:temp});
     }
+    this.ToogleCanReact();
+    
+  }
 
-    HappyClicked = () =>{
-      if(this.state.CanReact == true){
-        var temp = this.state.HappyEmojiNum;
-        temp = temp + 1;
-        this.setState({HappyEmojiNum:temp});
-      }
-      this.ToogleCanReact();
-      
+  LoveClicked = () =>{
+    if(this.state.CanReact == true){
+      var temp = this.state.LoveEmojiNum;
+      temp = temp + 1;
+      // NOTE, THIS WILL RESET THE OTHER COUNTS
+      this.setState({LoveEmojiNum:temp});
     }
+    this.ToogleCanReact();
+    
+  }
 
-    LoveClicked = () =>{
-      if(this.state.CanReact == true){
-        var temp = this.state.LoveEmojiNum;
-        temp = temp + 1;
-        this.setState({LoveEmojiNum:temp});
-      }
-      this.ToogleCanReact();
-      
+  NormalClicked = () =>{
+    if(this.state.CanReact == true){
+      var temp = this.state.NormalEmojiNum;
+      temp = temp + 1;
+      // NOTE, THIS WILL RESET THE OTHER COUNTS
+      this.setState({NormalEmojiNum:temp});
     }
+    this.ToogleCanReact();
+    
+  }
 
-    NormalClicked = () =>{
-      if(this.state.CanReact == true){
-        var temp = this.state.NormalEmojiNum;
-        temp = temp + 1;
-        this.setState({NormalEmojiNum:temp});
-      }
-      this.ToogleCanReact();
-      
+  SadClicked = () =>{
+    if(this.state.CanReact == true){
+      var temp = this.state.SadEmojiNum;
+      temp = temp + 1;
+      this.setState({SadEmojiNum:temp});
     }
-
-    SadClicked = () =>{
-      if(this.state.CanReact == true){
-        var temp = this.state.SadEmojiNum;
-        temp = temp + 1;
-        this.setState({SadEmojiNum:temp});
+    this.ToogleCanReact();
+    
+  }
+  
+  updateBarkCountsOnAdd(dataAdded) {
+    // UPDATE BARK COUNTS @BLAKE
+  }
+  
+  updateBarkCountsOnChange(dataChanged) {
+    // UPDATE BARK COUNTS @BLAKE
+    
+  }
+    
+  updateListener(barkId) {
+    if (this.last_bark_id != barkId) {
+      var root = firebase.database().ref()
+      if (this.last_bark_id != null) {
+        root.child("bark_reactions").child(this.last_bark_id).off('child_added', this.updateBarkCountsOnAdd)
+        root.child("bark_reactions").child(this.last_bark_id).off('child_changed', this.updateBarkCountsOnChange)
+        // reset bark counts next
       }
-      this.ToogleCanReact();
-      
+      if (barkId != null) {
+        root.child("bark_reactions").child(barkId).on('child_added', this.updateBarkCountsOnAdd)
+        root.child("bark_reactions").child(barkId).on('child_changed', this.updateBarkCountsOnChange)
+      }
+      this.last_bark_id = barkId
     }
+  }
 
-    getImageUrl(location){
+  getImageUrl(location){
+    
+    var storageRef = firebase.storage().ref();
+    var starsRef = storageRef.child(location);
+    return starsRef.getDownloadURL().then((url)=> {
+    return url;
+    
+    });
+    
+    }
+    
+    getEmojis() { 
+    //Get background color object     
+    var emObj =
+    firebase.database().ref('/emojis').once("value")
+    .then(function (snapshot) {
+    if (snapshot.val() != null) {
+    return snapshot.val(); 
+    }
+    
+    });
+    
+    return emObj;
+    
+    }
+    
+    async renderPicture(){
+    var emojis = await this.getEmojis();
 
-      var storageRef = firebase.storage().ref();
-      var starsRef = storageRef.child(location);
-      return starsRef.getDownloadURL().then((url)=> {
-      return url;
-      
-      });
-      
-      }
-      
-      getEmojis() { 
-      //Get background color object     
-      var emObj =
-      firebase.database().ref('/emojis').once("value")
-      .then(function (snapshot) {
-      if (snapshot.val() != null) {
-      return snapshot.val(); 
-      }
-      
-      });
-      
-      return emObj;
-      
-      }
-      
-      async renderPicture(){
-      var emojis = await this.getEmojis();
+    var source = await this.getImageUrl(emojis['cool']);
+    this.setState({CoolEmojiURL: source});
 
-      var source = await this.getImageUrl(emojis['cool']);
-      this.setState({CoolEmojiURL: source});
+    var source = await this.getImageUrl(emojis['drool']);
+    this.setState({DroolEmojiURL: source});
 
-      var source = await this.getImageUrl(emojis['drool']);
-      this.setState({DroolEmojiURL: source});
+    var source = await this.getImageUrl(emojis['happy']);
+    this.setState({HappyEmojiURL: source});
 
-      var source = await this.getImageUrl(emojis['happy']);
-      this.setState({HappyEmojiURL: source});
+    var source = await this.getImageUrl(emojis['love']);
+    this.setState({LoveEmojiURL: source});
 
-      var source = await this.getImageUrl(emojis['love']);
-      this.setState({LoveEmojiURL: source});
+    var source = await this.getImageUrl(emojis['normal']);
+    this.setState({NormalEmojiURL: source});
 
-      var source = await this.getImageUrl(emojis['normal']);
-      this.setState({NormalEmojiURL: source});
-
-      var source = await this.getImageUrl(emojis['sad']);
-      this.setState({SadEmojiURL: source});
-
+    var source = await this.getImageUrl(emojis['sad']);
+    this.setState({SadEmojiURL: source});
+  }
       
-      }
-      
-    render() {
-      return (
-        <div>
-          <Dialog
-            open={this.props.open}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-            >
+  render() {
+    this.updateListener(this.props.barkId)
+    return (
+      <div>
+        <Dialog
+          open={this.props.open}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          >
           
         
           <DialogActions>
