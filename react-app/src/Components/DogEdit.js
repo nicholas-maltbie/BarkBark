@@ -225,11 +225,9 @@ class DogEdit extends React.Component {
     this.setState(stateCopy, () => this.updateCanvas());
   }
 
-  async updateCanvas() { 
+  async updateCanvas(alphaBackground = 0.0) { 
     var c=document.getElementById("dogEditCanvas");
     var ctx=c.getContext("2d");
-    ctx.fillStyle = this.state.values.backgroundValue.hex;
-    ctx.fillRect(0, 0, c.width, c.height);
     var furImage = new Image();
     var eyesImage = new Image();
     var emotionImage = new Image();
@@ -241,24 +239,28 @@ class DogEdit extends React.Component {
     var eyeProm = getImageUrl(this.state.values.eyeValue['file'])
     var furProm = getImageUrl(this.state.values.furValue['file'])
     emotionImage.onload = () => {
-      console.log("emotion is loaded");
+      ctx.globalAlpha = 1
       ctx.drawImage(emotionImage, 0, 0, c.width, c.height); //image, x, y, width, height
     };
     eyesImage.onload = () => {
-      console.log("eye is loaded");
+      ctx.globalAlpha = 1
       ctx.drawImage(eyesImage, 0, 0, c.width, c.height);
     };
     furImage.onload = () => {
-      console.log("fur is loaded");
+      ctx.globalAlpha = 1
       ctx.drawImage(furImage, 0, 0, c.width, c.height);
     };
     emotionImage.crossOrigin = "anonymous";
     eyesImage.crossOrigin = "anonymous";
     furImage.crossOrigin = "anonymous";
-    furProm.then( url => { furImage.src = url; console.log(url) })
-    eyeProm.then( url => {eyesImage.src = url; console.log(url) })
-    emotionProm.then( url => { emotionImage.src = url; console.log(url) })
     Promise.all([eyeProm, emotionProm, furProm]).then( (values) => {
+      ctx.clearRect(0,0, c.width, c.height)
+      ctx.globalAlpha = alphaBackground
+      ctx.fillStyle = this.state.values.backgroundValue.hex;
+      ctx.fillRect(0, 0, c.width, c.height);
+      emotionImage.src = values[0]
+      eyesImage.src = values[1]
+      furImage.src = values[2]
     }).catch((error) => console.log(error));
   };
 
