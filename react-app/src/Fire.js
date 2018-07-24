@@ -30,13 +30,7 @@ export const uiConfig = {
 };
 
 export async function getUserInfo(userId){ //Get function for user snapshot
-    var userInfo = firebase.database().ref('/users/' + userId).once("value")
-    .then(function (snapshot) {
-        if (snapshot.val() != null) {
-            return snapshot.val();
-        }
-    });
-    return await userInfo;
+    return firebase.database().ref('/users/' + userId).once("value")
 }
 
 
@@ -48,15 +42,15 @@ export function verifyAccount(userId, name, email) {
     }
     else {
         //console.log("User doesn't exist")
-        ref.child("users/" + userId).set({
+        ref.child("users").child(userId).set({
             username: name,
             email: email,
             dog: {
-                name: "Doggy",
+                name: "Dog",
                 breed: "BOX",
                 emotion: "BOX_HAP",
                 fur: "BOX_HAP_BROWN",
-                eye: "BOX_HAP_4B5969",
+                eye: "BOX_HAP_296921",
                 color: "Blue"
             }
         })

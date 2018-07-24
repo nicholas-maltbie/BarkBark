@@ -100,6 +100,12 @@
   padding: 5px;
   border-radius: 5%;
 }
+.dogOptionSelectTab {
+  margin-top: 10px;
+  font-color: black;
+  margin-bottom: 10px;
+}
+
 .dogEditButton {
   width:20%;
 }
@@ -168,6 +174,8 @@
 #ContactPageScreenStyle{
 	height: 100%;
     width:100%;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     flex-Direction:column;
     align-Items:center;
