@@ -17,7 +17,7 @@ firebase.initializeApp(config);
 // Configure FirebaseUI.
 export const uiConfig = {
   callbacks: {},
-  signInFlow: 'popup',
+  signInFlow: 'redirect',
   // Redirect to /Home after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
   signInSuccessUrl: '/',
   // We will display Google and Facebook as auth providers.
