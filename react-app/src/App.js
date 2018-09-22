@@ -44,6 +44,17 @@ function SignIn(props) {
               });
               firebase.auth().signInWithPopup(provider)
             }}>different account</span>.</p>
+        <p>Sign in as <span style={{color:'blue'}}
+            onmouseover="this.style.cursor='pointer'"
+            onmouseout="this.style.cursor='default'"
+            onClick={() => { 
+            firebase.auth().signInAnonymously().catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // ...
+            });
+             }}>guest</span></p>
         <p>By signing in you agree to our <a href="/TermsOfUse">Terms of Use</a>.</p>
       </div>
     )

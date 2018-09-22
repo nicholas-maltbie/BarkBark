@@ -1,6 +1,7 @@
 // Import FirebaseAuth and firebase.
 // import React from 'react';
 import firebase from 'firebase';
+import firebaseui from 'firebase';
 
 // Configure Firebase.
 var config = {
@@ -25,7 +26,7 @@ export const uiConfig = {
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
     firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
   ]
 };
 
